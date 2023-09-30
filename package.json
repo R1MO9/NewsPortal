@@ -2,7 +2,8 @@
   "name": "newsportal",
   "version": "1.0.0",
   "description": "Creating a News Portal where anyone can visit and read the top News of the day",
-  "main": "index.js","type": "module",
+  "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,5 +15,6 @@
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "nodemon": "^3.0.1"
-  }
+  },
+  "devDependencies": {}
 }
