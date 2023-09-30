@@ -1,0 +1,15 @@
+body{
+    margin: 0 30%;
+    border: 0;
+    background-color: antiquewhite;
+}
+h1{
+    text-align: center;
+}
+.news{
+    margin: 10px;
+    display: flex;
+}
+img{
+    margin: 30px;
+}
