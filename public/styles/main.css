@@ -1,7 +1,10 @@
 body{
-    margin: 0 30%;
+    margin: 0;
     border: 0;
     background-color: antiquewhite;
+}
+.content{
+    margin: 0 20%;
 }
 h1{
     text-align: center;
@@ -12,4 +15,50 @@ h1{
 }
 img{
     margin: 30px;
+}
+a{
+    text-decoration: none;
+}
+
+
+
+/* footer */
+.footer-information{
+    background-color: #1c1f20;
+    height:auto;
+    
+}
+
+.footer-container{
+    margin:0 70px;
+}
+.footer-top{
+    padding:30px 0;
+    color: white;
+    height:300px;
+}
+.underline-animation{
+    margin-top:10px;
+}
+.link-decoration{
+    text-decoration: none;
+    color:#ffffff;
+}
+@media(min-width:1023px) {
+    .foot-col4{
+        position:absolute;
+        right:3%;
+        
+     }
+     .foot-col3{
+        position:absolute;
+        right:28%;
+        
+     }
+     .foot-col2{
+        position:absolute;
+        right:52%;
+        
+        
+     }
 }
