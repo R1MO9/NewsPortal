@@ -22,15 +22,15 @@
 
             <div class="form-body">
 
-                <form action="/AdminPage" class="the-form">
+                <form  class="the-form" method="post">
 
-                    <label for="email">Admin Id</label>
-                    <input type="email" name="email" id="email" placeholder="Enter your admin id">
+                    <label for="adminId">Admin Id</label>
+                    <input type="email" name="adminId" id="adminId" placeholder="Enter your admin id" required>
 
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password" placeholder="Enter your password">
+                    <input type="password" name="password" id="password" placeholder="Enter your password" required>
 
-                    <input type="submit" value="Log In">
+                    <input type="submit" value="Log In" formaction="/submit">
 
                 </form>
 
