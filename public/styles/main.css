@@ -1,7 +1,49 @@
-body{
+@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Serif:ital,opsz,wght@0,8..144,700;1,8..144,600&display=swap');
+
+.body_part{
     margin: 0 30%;
     border: 0;
     background-color: antiquewhite;
+}
+.header{
+    text-align: center;
+}
+.main_title{
+
+  font-family: 'Roboto Serif', serif;
+  font-weight: 700;
+  font-size: 40px;
+  font-style: italic;
+  color: #FE0000;
+}
+.header a{
+    text-decoration: none;
+    color:black;
+}
+
+.admin_login{
+    font-family: 'Roboto', serif;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+}
+
+h1{
+    text-align: center;
+}
+.news{
+    margin: 10px;
+    display: flex;
+}
+img{
+    margin: 30px;
+}body{
+    margin: 0;
+    border: 0;
+    background-color: antiquewhite;
+}
+.content{
+    margin: 0 20%;
 }
 h1{
     text-align: center;
@@ -16,8 +58,6 @@ img{
 a{
     text-decoration: none;
 }
-
-
 
 /* footer */
 .footer-information{
@@ -41,6 +81,10 @@ a{
     text-decoration: none;
     color:#ffffff;
 }
+@media(min-width:1023px) {
+    .foot-col4{
+        position:absolute;
+        right:3%;
         
      }
      .foot-col3{
