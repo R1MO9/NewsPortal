@@ -45,30 +45,34 @@ app.get("/adminPage", authenticateUser,(req,res)=>{
     res.render("partials/adminPanel.ejs");
 })
 
+app.get("/errorPage",(req,res)=>{
+
+    res.render("partials/random404.ejs");
+})
 
 app.post("/submit",async(req,res)=>{
 
     const adminId = req.body.adminId;
     const password = req.body.password;
 
-    console.log(password);
 
     try {
         if (adminId === masterId && password === masterKey) {
             console.log("correct id & pass");
             // Redirect to the AdminPage route
             req.session.authenticated = true;
-
+            
             res.redirect("/adminPage");
+            
         } else {
             console.log("check id");
             // Redirect to an error page or handle the error accordingly
-            // res.redirect("/errorPage");
+            res.redirect("/Admin_login");
         }
     } catch (err) {
         console.log(err);
         // Handle other errors
-        // res.redirect("/errorPage");
+        res.redirect("/errorPage");
     }
 })
 
