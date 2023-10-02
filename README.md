@@ -2,7 +2,7 @@
 
 Welcome to NewsPortal, a web-based news portal where users can read the top news of the day. Additionally, there is an Admin Panel that allows administrators to log in and manage posts, including updating, creating, and deleting them.
 
-### Work in Progress
+<b>Work in Progress</b>
 
 ## How to Run
 
