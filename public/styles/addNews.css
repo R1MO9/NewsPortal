@@ -1,7 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Serif:ital,opsz,wght@0,8..144,700;1,8..144,600&display=swap');
 
 body{
-    background-color: #FDF4F5;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  /* background-color: #56385a; */
+  font-family: 'Arial', sans-serif;
 }
 .nav-bar{
     height: 50px;
@@ -18,23 +22,43 @@ body{
     margin-left:5px;
 }
 
-  /* .container {
-    background-color: #ffffff;
-    width: 60%;
-    min-width: 27.5em;
-    padding: 3.12em 1.87em;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 50%;
-    box-shadow: 0 1.25em 3.43em rgba(0, 0, 0, 0.08);
-    border-radius: 0.5em;
-  } */
+  header {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1em 0;
+  }
+
+  main {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
 
   input[type="file"] {
     display: none;
   }
-  label {
+
+  input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+  }
+  #drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#drop-area.highlight {
+    border-color: #333;
+}
+  .container label {
     display: block;
     position: relative;
     background-color: #025bee;
@@ -56,6 +80,7 @@ body{
     gap: 1.25em;
     flex-wrap: wrap;
   }
+
   #image-display figure {
     width: 45%;
   }
@@ -73,10 +98,21 @@ body{
   
   .close-icon {
     position: absolute;
-    top: 0;
-    right:6em;
+    top: -15%;
+    right:12%;
     cursor: pointer;
     font-size: 3em;
     padding: 0.2em 0.5em;
    
 } 
+button {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }

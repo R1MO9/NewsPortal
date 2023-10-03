@@ -17,22 +17,38 @@
 </head>
 
 <body>
-    <div class="nav-bar">
+    <!-- <div class="nav-bar">
         <i class="fa-regular fa-pen-to-square"></i> <span calss="text"> Edit </span>
-    </div>
-
+    </div> -->
+    <header>
+        <h1><i class="fa-regular fa-pen-to-square"></i>&nbsp;&nbsp;Edit News</h1>
+    </header>
     <!-- <div class="banner-photo"> -->
-
+        <main>
+            <div id="drop-area">
         <div class="container">
             <input type="file" id="upload-button" multiple accept="image/*" />
-            <label for="upload-button"><i class="fa-solid fa-upload"></i>&nbsp; Choose Or Drop Photos
+            <label for="upload-button" ><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
             </label>
             <div id="error"></div>
             <div id="image-display"></div>
         </div>
-    <!-- </div> -->
-    <textarea name="Text" id="TextInput" rows="6" placeholder="Enter Text" value=".."></textarea>
+    </div>
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title">
 
+        <label for="content">Content:</label>
+        <textarea id="content" name="content" rows="4"></textarea>
+
+        <label for="image">Image URL:</label>
+        <input type="text" id="image" name="image">
+
+        <button type="button" onclick="postBlog()">Post</button>
+    <!-- </div> -->
+    <!-- <input type="text" placeholder="Title........" name="title" id="InputTitle" > -->
+    
+    <!-- <textarea name="Text" id="TextInput" rows="6" placeholder="Enter Text" value=".."></textarea> -->
+</main>
     <script src="assets/js/addNews.js"></script>
 </body>
 
