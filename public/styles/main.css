@@ -4,6 +4,7 @@
 
 .header {
     text-align: center;
+    padding: 20px;
 }
 
 .main_title {
@@ -22,17 +23,12 @@
     top: 15px;
 }
 
-h1 {
-    text-align: center;
-}
-
-
-.body-part{
+.body-part {
     padding: 0 10%;
 }
 
 section {
-    padding: 10px 25% 10px 0;
+    padding: 0 25% 5% 0;
     background-color: #f9f9f9;
 }
 
@@ -46,6 +42,10 @@ section {
     font-weight: 700;
 }
 
+.card-text {
+    padding-left: 20px;
+    text-align: left;
+}
 
 /* Swiper JS */
 swiper-container {
@@ -69,6 +69,11 @@ swiper-slide img {
     object-fit: cover;
 }
 
+.card-title {
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+}
+
 /* footer */
 .footer-information {
     background-color: #1c1f20;
@@ -90,7 +95,10 @@ swiper-slide img {
     margin-top: 10px;
 }
 
-
+.link-decoration {
+    color: #ffffff;
+    text-decoration: none;
+}
 
 @media(min-width:1023px) {
     .foot-col4 {
