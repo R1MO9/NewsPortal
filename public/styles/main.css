@@ -43,10 +43,19 @@ section {
 }
 
 .card-text {
-    padding-left: 20px;
+    /* padding-left: 20px; */
     text-align: left;
 }
 
+.swiper .card-text{
+     padding-left: 20px;
+     text-align: left;
+}
+
+.swiper{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
 /* Swiper JS */
 swiper-container {
     width: 100%;
