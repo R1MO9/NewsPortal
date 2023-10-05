@@ -87,3 +87,11 @@ container.addEventListener(
 window.onload = () => {
     error.innerText = "";
 };
+
+textarea = document.querySelector("#newsContent");
+        textarea.addEventListener('input', autoResize, false);
+ 
+        function autoResize() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        }
