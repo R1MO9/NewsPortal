@@ -97,4 +97,30 @@ button {
             overflow: hidden;
             resize: none;
         }
+
+
+         /* Media Query for Tablets */
+         @media (max-width: 768px) {
+          .container lable {
+              /* padding: 10px; */
+              width: 200px;
+          }
+      }
+
+      /* Media Query for Phones */
+      @media (max-width: 480px) {
+        .container label {
+              font-size: 10px;
+              width: 150px;
+          }
+          .close-icon {
+            position: relative;
+            bottom: 180px;
+            left: 100px;
+            cursor: pointer;
+            font-size: 3em;
+            padding: 0.2em 0.5em;
+           
+        } 
+      }
    

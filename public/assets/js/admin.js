@@ -23,11 +23,6 @@ menuBar.addEventListener('click', function () {
 })
 
 
-
-
-
-
-
 const searchButton = document.querySelector('#content nav form .form-input button');
 const searchButtonIcon = document.querySelector('#content nav form .form-input button .bx');
 const searchForm = document.querySelector('#content nav form');
@@ -63,14 +58,51 @@ window.addEventListener('resize', function () {
 	}
 })
 
+// Function to set the theme in local storage
+function setTheme(theme) {
+	localStorage.setItem('theme', theme);
+}
 
+// Function to get the theme from local storage
+function getTheme() {
+	return localStorage.getItem('theme') || 'light'; // Default to light if the theme is not set
+}
+
+let currentTheme = getTheme(); // Initialize the current theme from local storage
 
 const switchMode = document.getElementById('switch-mode');
 
-switchMode.addEventListener('change', function () {
-	if(this.checked) {
+// Function to update the theme
+function updateTheme() {
+	if (currentTheme === 'dark') {
 		document.body.classList.add('dark');
+
 	} else {
 		document.body.classList.remove('dark');
+		
 	}
-})
+}
+
+// Function to update the switch state based on the theme
+function updateSwitchState() {
+	switchMode.checked = currentTheme === 'dark';
+}
+
+// Update the theme and switch state on page load
+updateTheme();
+updateSwitchState();
+
+switchMode.addEventListener('change', function () {
+	if (this.checked) {
+		currentTheme = 'dark';
+	} else {
+		currentTheme = 'light';
+	}
+	setTheme(currentTheme); // Save the selected theme to local storage
+	updateTheme(); // Update the theme immediately
+});
+
+// Function to get the current theme
+function getCurrentTheme() {
+	return currentTheme;
+}

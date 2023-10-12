@@ -95,3 +95,14 @@ textarea = document.querySelector("#newsContent");
             this.style.height = 'auto';
             this.style.height = this.scrollHeight + 'px';
         }
+
+        if (getCurrentTheme() === 'dark') {
+            // Do something for dark theme
+            // Get all elements with the class name "color_change"
+    var elements = document.getElementsByClassName("color_change");
+    
+    // Loop through the collection and set the style for each element
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.color = "white";
+    }
+        } 

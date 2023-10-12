@@ -1,7 +1,7 @@
-const express = require('express');
-const bodyParser =  require('body-parser');
+import express from 'express';
+import bodyParser from 'body-parser';
 // for admin authentication
-const session = require('express-session');
+import session from 'express-session';
 
 
 const port = 3000;
