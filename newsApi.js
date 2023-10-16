@@ -1,107 +1,205 @@
 import express from "express";
 import bodyParser from "body-parser";
+import mongoose from "mongoose";
+import fs from "fs";
 
 const app = express();
 const port = 4000;
-
+mongoose.connect("mongodb://127.0.0.1:27017/NewsDb", {
+  useNewUrlParser: true
+})
 // In-memory data store
-
-let posts = [
-  {
-    id: 1,
-    title: "The Rise of Decentralized Finance",
-    content:
-      "Decentralized Finance (DeFi) is an emerging and rapidly evolving field in the blockchain industry. It refers to the shift from traditional, centralized financial systems to peer-to-peer finance enabled by decentralized technologies built on Ethereum and other blockchains. With the promise of reduced dependency on the traditional banking sector, DeFi platforms offer a wide range of services, from lending and borrowing to insurance and trading.",
-    author: "Alex Thompson",
-    date: "2023-08-01T10:00:00Z",
-  },
-  {
-    id: 2,
-    title: "The Impact of Artificial Intelligence on Modern Businesses",
-    content:
-      "Artificial Intelligence (AI) is no longer a concept of the future. It's very much a part of our present, reshaping industries and enhancing the capabilities of existing systems. From automating routine tasks to offering intelligent insights, AI is proving to be a boon for businesses. With advancements in machine learning and deep learning, businesses can now address previously insurmountable problems and tap into new opportunities.",
-    author: "Mia Williams",
-    date: "2023-08-05T14:30:00Z",
-  },
-  {
-    id: 3,
-    title: "Sustainable Living: Tips for an Eco-Friendly Lifestyle",
-    content:
-      "Sustainability is more than just a buzzword; it's a way of life. As the effects of climate change become more pronounced, there's a growing realization about the need to live sustainably. From reducing waste and conserving energy to supporting eco-friendly products, there are numerous ways we can make our daily lives more environmentally friendly. This post will explore practical tips and habits that can make a significant difference.",
-    author: "Samuel Green",
-    date: "2023-08-10T09:15:00Z",
-  },
-];
-
-let lastId = 3;
-
-// Middleware
 app.use(bodyParser.json());
+// Middleware
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
-//Write your code here//
 
-//CHALLENGE 1: GET All posts
-app.get("/posts",(req,res)=>{
-  const allPosts = posts;
-  res.json(allPosts);
+const imageSchema = new mongoose.Schema({
+  image: String
 });
 
-//CHALLENGE 2: GET a specific post by id
+const postSchema = mongoose.Schema({
+  news_No: Number,
+  banner_img: String,
+  title: String,
+  content: String,
+  other_img: [imageSchema],
+  img_caption : String,
+  date : String
+});
 
-app.get("/posts/:id",(req,res)=>{
+const counterSchema = new mongoose.Schema({
+  count: {
+    type: Number,
+    default: 0
+  }
+});
+
+const CounterModel = mongoose.model('CounterModel', counterSchema);
+const PostNews = mongoose.model("PostNews", postSchema);
+
+
+// 1: GET All posts
+
+app.get("/posts", async (req, res) => {
+
+  try {
+    const allPosts = await PostNews.find().lean();
+
+    res.send(allPosts);
+
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "Internal Server Error"
+    });
+  }
+
+});
+
+
+
+// 2: GET a specific post by id
+
+app.get("/posts/:id",async(req,res)=>{
 
  const id = parseInt(req.params.id);
- const findPost =  posts.find((post)=> post.id === id);
- if (!findPost) return res.status(404).json({ message: "Post not found" });
- res.json(findPost);
+ try {
+  // Find the post by news_No
+  const post = await PostNews.findOne({
+    news_No: id
+  });
+
+  if (!post) {
+    return res.status(404).json({
+      error: 'Post not found'
+    });
+  }
+
+  res.json(post);
+} catch (error) {
+  console.error(error);
+  res.status(500).send(error);
+}
 
 });
 
-const date = new Date();
-//CHALLENGE 3: POST a new post
-app.post("/posts",(req,res)=>{
-  var newId = lastId + 1;
-  const newPost = {
-     id : newId,
-     title : req.body.title,
-     content : req.body.content,
-     author : req.body.author,
-     date: date,
-  } 
-  lastId = newId;
-  posts.push(newPost);
-  res.status(200).json(posts);
+const today = new Date();
+const day = today.getDate();
+const month = today.getMonth() + 1;
+const year = today.getFullYear();
+const formattedDate = `${day}-${month}-${year}`;
+
+// 3: POST a new post
+app.post("/posts", async (req, res) => {
+
+  try {
+    // Increment the counter before creating the new post
+    const counter = await CounterModel.findOne();
+    if (!counter) {
+      // Create a counter document if it doesn't exist
+      await CounterModel.create({
+        count: 1
+      });
+    } else {
+      // Increment the existing counter
+      await CounterModel.updateOne({}, {
+        $inc: {
+          count: 1
+        }
+      });
+    }
+
+    // Create a new post with the incremented count
+    const newPost = new PostNews({
+      news_No: counter.count, // Use the incremented count as news_No
+      banner_img: req.body.img,
+      title: req.body.title,
+      content: req.body.content,
+      other_img: [imageSchema],
+      date:formattedDate
+    });
+
+    await newPost.save();
+    console.log("Successfully saved");
+    res.status(200).json(newPost);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      error: "An error occurred while saving the post."
+    });
+  }
 });
 
-//CHALLENGE 4: PATCH a post when you just want to update one parameter
-app.patch("/posts/:id",(req,res)=>{
 
+// 4: PATCH a post when you just want to update one parameter
+app.patch("/posts/:id", async (req, res) => {
   const id = parseInt(req.params.id);
-  const Post =  posts.find((post)=> post.id === id);
 
-  if( req.body.title){
-    Post.title = req.body.title
+  console.log(id);
+
+  try {
+    // Find the post by news_No
+    const post = await PostNews.findOne({
+      news_No: id
+    });
+
+    if (!post) {
+      return res.status(404).json({
+        error: 'Post not found'
+      });
+    }
+
+    console.log(post);
+
+    if (req.body.title) {
+      post.title = req.body.title;
+    }
+    if (req.body.img_caption) {
+      post.img_caption = req.body.img_caption;
+    }
+    if (req.body.content) {
+      post.content = req.body.content;
+    }
+
+
+    // Save the updated post
+    await post.save();
+
+    res.json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
   }
-  if( req.body.content){
-    Post.content = req.body.content
+});
+
+
+// //CHALLENGE 5: DELETE a specific post by providing the post id.
+app.delete("/posts/:id", async (req, res) => {
+
+  try {
+    const id = parseInt(req.params.id);
+
+    // Use findOneAndRemove with news_No
+    const docDelete = await PostNews.findOneAndRemove({
+      news_No: id
+    });
+
+    if (!docDelete) {
+      // If no document is found with the provided news_No, send a 404 response
+      return res.status(404).json({
+        message: "Post not found"
+      });
+    }
+    res.send("succesfully removed");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
   }
-  if( req.body.author){
-    Post.author = req.body.author
-  }
- 
-  res.json(Post);
- });
 
-
-//CHALLENGE 5: DELETE a specific post by providing the post id.
-app.delete("/posts/:id",(req,res)=>{
-  const index = posts.findIndex((p)=> p.id === parseInt(req.params.id));
-  if (index === -1) return res.status(404).json({ message: "Post not found" });
-
-    posts.splice(index,1);
-    res.json({ message: "Post deleted" });
 });
 
 app.listen(port, () => {

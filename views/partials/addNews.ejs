@@ -111,7 +111,7 @@
 			</div>
             <br>
             <br>
-
+			<form id="newPostForm" method="post" action="/api/posts">
             <div id="drop-area">
                 <div class="container">
                     <input type="file" id="upload-button" multiple accept="image/*" />
@@ -133,7 +133,8 @@
 
                 <input type="text" id="image" name="image"> 
         
-                <button type="button" onclick="postBlog()">Post</button>
+                <button type="submit">Post</button>
+				</form>
 		</main>
 		<!-- MAIN -->
 	</section>
