@@ -22,34 +22,39 @@
     right: 20px;
     top: 15px;
 }
+/*  */
+body{
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
 
-.body-part {
+.body-part{
     padding: 0 10%;
 }
 
-section {
-    padding: 0 25% 5% 0;
-    background-color: #f9f9f9;
+.card-news{
+    width: 100%;
 }
 
-.container {
-    background-color: #f9f9f9;
+.newsCard{
+    width: 75%;
+    display: inline-block;
 }
 
-.card-body h4 {
-    color: rgb(0, 0, 0);
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
+.adDiv{
+    width: 24%;
+    display: inline-block;
+}
+.newsCard .col{
+    width: 350px;
+    display: inline-block;
 }
 
-.card-text {
-    /* padding-left: 20px; */
-    text-align: left;
-}
 
 .swiper .card-text{
-     padding-left: 20px;
-     text-align: left;
+    padding-left: 20px;
+    text-align: left;
 }
 
 .swiper{
