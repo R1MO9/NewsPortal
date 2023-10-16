@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet"  type="text/css" href="/styles/adminPanel.css">
-    <link rel="stylesheet"  type="text/css" href="/styles/addNews.css">
+    <link rel="stylesheet"  type="text/css" href="styles/adminPanel.css">
+    <link rel="stylesheet"  type="text/css" href="styles/allNews.css">
     <script src="https://kit.fontawesome.com/abfccd6663.js" crossorigin="anonymous"></script>
 </head>
-<body>
-   
 
+<body>
 	<!-- SIDEBAR -->
 	<section id="sidebar">
 		<a href="#" class="brand">
@@ -25,8 +24,8 @@
 					<span class="text">Dashboard</span>
 				</a>
 			</li>
-			<li class="active">
-				<a href="#">
+			<li>
+				<a href="/addNews">
 					<i class='bx bxs-shopping-bag-alt' ></i>
 					<span class="text">Add News</span>
 				</a>
@@ -37,7 +36,7 @@
 					<span class="text">Analytics</span>
 				</a>
 			</li>
-			<li>
+			<li class="active">
 				<a href="/allNews">
 					<i class='bx bxs-message-dots' ></i>
 					<span class="text">All News</span>
@@ -97,78 +96,68 @@
 		<main>
 			<div class="head-title">
 				<div class="left">
-					<h1><i class='bx bxs-news'></i>&nbsp;&nbsp;<%= heading %></h1>
+					<h1><i class='bx bxs-news'></i>&nbsp;&nbsp;All News</h1>
 					<ul class="breadcrumb">
 						<li>
 							<a href="#">Dashboard</a>
 						</li>
 						<li><i class='bx bx-chevron-right' ></i></li>
 						<li>
-							<a class="active" href="#"><%= heading %></a>
+							<a class="active" href="#">All News></a>
 						</li>
 					</ul>
 				</div>
 			</div>
             <br>
-            <br>
-			<% if (locals.post) { %>
-				<form id="newPostForm" method="post" action="/api/posts/<%=post._id%>">
-					<div id="drop-area">
-						<div class="container">
-							<input type="file" id="upload-button" multiple accept="image/*" />
-							<label for="upload-button" class="color_change" ><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
-							</label>
-							<div id="error"></div>
-							<div id="image-display"></div>
-						</div>
+<table>
+    <thead>
+        <tr>
+            <th >No.</th>
+            <th >Image</th>
+            <th >Content</th>
+            <th >Date</th>
+            <th >Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Sample data row (replace this with your actual data) -->
+		<% posts.forEach((post)=>{%>
+        <tr>
+			<%  if(post.news_No){%>
+            <td ><%= post.news_No%></td>
+			<% } else{%>
+				<td > data not found </td>
+				<% } %>
+            <td><img src="images/3.avif" alt="Sample Image" width="100"></td>
+            <td>
+				<%  if(post.title && post.content){%>
+				<div class="content" style="width: 800px;height: 150px;overflow-x: auto;">
+					<%=post.title %>
+					<%= post.content %>
+				</div>
+				<% } else{%>
+					<div class="content" style="width: 800px;height: 150px;overflow-x: auto;">
+						data not found
 					</div>
-					<br>
-					<label for="caption" class="color_change">Image Caption:</label>
-						<input type="text" id="caption" name="caption" value="<%= post.img_caption %>">
-						<br>
-						<label for="title" class="color_change">Title:</label>
-						<input type="text" id="title" name="title" value="<%=post.title %>">
-						<br>
-						<label for="content" class="color_change">Content:</label>
-						<!-- <textarea id="content" name="content" rows="4"></textarea> -->
-						<textarea id="newsContent" name="newsContent" rows="7"><%=post.content %></textarea>
-						
-						 <label for="image" class="color_change">Image URL:</label>
-		
-						<input type="text" id="image" name="image"> 
-				
-						<button type="submit">Post</button>
-						</form>
-				<% }else{ %> 
-					<form id="newPostForm" method="post" action="/api/posts">
-						<div id="drop-area">
-							<div class="container">
-								<input type="file" id="upload-button" multiple accept="image/*" />
-								<label for="upload-button" class="color_change" ><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
-								</label>
-								<div id="error"></div>
-								<div id="image-display"></div>
-							</div>
-						</div>
-						<br>
-						<label for="caption" class="color_change">Image Caption:</label>
-							<input type="text" id="caption" name="caption">
-							<br>
-							<label for="title" class="color_change">Title:</label>
-							<input type="text" id="title" name="title">
-							<br>
-							<label for="content" class="color_change">Content:</label>
-							<!-- <textarea id="content" name="content" rows="4"></textarea> -->
-							<textarea id="newsContent" name="newsContent" rows="7"></textarea>
-							
-							 <label for="image" class="color_change">Image URL:</label>
-			
-							<input type="text" id="image" name="image"> 
 					
-							<button type="submit">Post</button>
-							</form>
 					<% } %>
-			
+			</td>
+			<%  if(post.date){%>
+            <td ><%= post.date %></td>
+			<% }else{%>
+				<td >data not found</td>
+				<% } %>
+            <td>
+                <a href="/edit/<%=post._id%>"><span class="edit"><i class="fa-regular fa-pen-to-square"></i></span></a>
+				<br><br>
+                <a href="/api/posts/delete/<%=post._id%>" style="text-decoration: none;"><span class="delete"><i class="fa-solid fa-trash"></i></span></a>
+            </td>
+        </tr>
+		<% }) %>
+        <!-- Add more rows as needed -->
+    </tbody>
+</table>
+
 		</main>
 		<!-- MAIN -->
 	</section>
@@ -176,7 +165,7 @@
 	
 
 	<script src="assets/js/admin.js"></script>
-    <script src="assets/js/addNews.js"></script>
+    
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
 			const switchMode = document.getElementById('switch-mode');
@@ -186,7 +175,7 @@
 			});
 	
 			function updateTextColor(isDarkMode) {
-				const elements = document.querySelectorAll('.color_change');
+				const elements = document.querySelectorAll('th, td,i, .content');
 				const textColor = isDarkMode ? 'white' : 'black';
 	
 				elements.forEach(element => {
@@ -195,5 +184,6 @@
 			}
 		});
 	</script>
+
 </body>
 </html>

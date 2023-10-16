@@ -66,11 +66,11 @@ app.get("/posts", async (req, res) => {
 
 app.get("/posts/:id",async(req,res)=>{
 
- const id = parseInt(req.params.id);
+ const id = req.params.id;
  try {
   // Find the post by news_No
   const post = await PostNews.findOne({
-    news_No: id
+    _id: id
   });
 
   if (!post) {
@@ -117,6 +117,7 @@ app.post("/posts", async (req, res) => {
     const newPost = new PostNews({
       news_No: counter.count, // Use the incremented count as news_No
       banner_img: req.body.img,
+      img_caption : req.body.img_caption,
       title: req.body.title,
       content: req.body.content,
       other_img: [imageSchema],
@@ -137,14 +138,14 @@ app.post("/posts", async (req, res) => {
 
 // 4: PATCH a post when you just want to update one parameter
 app.patch("/posts/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
 
   console.log(id);
 
   try {
     // Find the post by news_No
     const post = await PostNews.findOne({
-      news_No: id
+      _id: id
     });
 
     if (!post) {
@@ -181,11 +182,11 @@ app.patch("/posts/:id", async (req, res) => {
 app.delete("/posts/:id", async (req, res) => {
 
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     // Use findOneAndRemove with news_No
-    const docDelete = await PostNews.findOneAndRemove({
-      news_No: id
+    const docDelete = await PostNews.findOneAndDelete({
+      _id: id
     });
 
     if (!docDelete) {

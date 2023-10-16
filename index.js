@@ -83,37 +83,84 @@ app.post("/submit",async(req,res)=>{
         res.redirect("/errorPage");
     }
 })
+const API_URL = "http://localhost:4000";
+
 
 app.get("/addNews", authenticateUser,(req,res)=>{
-    res.render("partials/addNews.ejs");
+    res.render("partials/addNews.ejs",{heading:"Add News"});
 })
 
-const API_URL = "http://localhost:4000";
-// Route to render the main page
-// app.get("/allposts",authenticateUser, async (req, res) => {
-//     try {
-//       const response = await axios.get(`${API_URL}/posts`);
-//       console.log(response);
-//       res.render("index.ejs", { posts: response.data });
-//     } catch (error) {
-//       res.status(500).json({ message: "Error fetching posts" });
-//     }
+ // get data from a  post
+ app.get("/edit/:id",authenticateUser, async (req, res) => {
+
+    try {
+      const response = await axios.get(`${API_URL}/posts/${req.params.id}`);
+      console.log(response.data);
+      res.render("partials/addNews.ejs", {
+        heading: "Edit News",
+        post: response.data,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching post" });
+    }
+  });
+
   
-//   });
+
+// Route to render the main page
+app.get("/allNews",authenticateUser, async (req, res) => {
+    try {
+      const response = await axios.get(`${API_URL}/posts`);
+    //   console.log(response);
+      res.render("partials/allNews.ejs", { posts: response.data });
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching posts" });
+    }
+  
+  });
 
 // Create a new post
-app.post("/api/posts", async (req, res) => {
+app.post("/api/posts",authenticateUser, async (req, res) => {
     const title = req.body.title;
     const newsContent = req.body.newsContent;
-    console.log(title);
-    console.log(newsContent);
+    const caption = req.body.caption;
+   
     try {
-      const response = await axios.post(`${API_URL}/posts`, {title : title,content : newsContent});
+      const response = await axios.post(`${API_URL}/posts`, {img_caption:caption,title : title,content : newsContent});
 
-      console.log(response.data);
-      res.redirect("/adminPage");
+    //   console.log(response.data);
+      res.redirect("/allNews");
     } catch (error) {
       res.status(500).json({ message: "Error creating post" });
+    }
+  });
+
+  // patially update
+  app.post("/api/posts/:id",authenticateUser,async (req, res) => {
+    console.log("called");
+    const title = req.body.title;
+    const newsContent = req.body.newsContent;
+    const caption = req.body.caption;
+    try {
+      const response = await axios.patch(
+        `${API_URL}/posts/${req.params.id}`,{img_caption:caption,title : title,content : newsContent}
+      );
+      console.log(response.data);
+      res.redirect("/allNews");
+    } catch (error) {
+      res.status(500).json({ message: "Error updating post" });
+    }
+  });
+
+  // Delete a post
+app.get("/api/posts/delete/:id",authenticateUser, async (req, res) => {
+    const id = req.params.id;
+   console.log(req.params.id);
+    try {
+      await axios.delete(`${API_URL}/posts/${req.params.id}`);
+      res.redirect("/allNews");
+    } catch (error) {
+      res.status(500).json({ message: "Error deleting post" });
     }
   });
 
