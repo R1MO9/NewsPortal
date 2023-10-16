@@ -94,10 +94,31 @@ button {
         }
         #newsContent {
             display: block;
-            overflow: hidden;
-            resize: none;
+            overflow-y: auto;
+            resize:vertical;
         }
 
+        /* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #c266db #f5f5f5;
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #f5f5f5;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #c266db;
+    border-radius: 11px;
+    border: 3px solid #ffffff;
+  }
 
          /* Media Query for Tablets */
          @media (max-width: 768px) {

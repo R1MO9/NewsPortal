@@ -189,14 +189,20 @@ app.delete("/posts/:id", async (req, res) => {
       _id: id
     });
 
-    if (!docDelete) {
-      // If no document is found with the provided news_No, send a 404 response
-      return res.status(404).json({
-        message: "Post not found"
-      });
-    }
-    res.send("succesfully removed");
-  } catch (error) {
+   // Get all remaining posts and update news_No accordingly
+   const remainingPosts = await PostNews.find({}, '_id').sort({ news_No: 1 });
+
+   for (let i = 0; i < remainingPosts.length; i++) {
+     const postId = remainingPosts[i]._id;
+     await PostNews.findByIdAndUpdate(postId, { $set: { news_No: i + 1 } });
+
+   }
+   console.log(remainingPosts.length);
+   await CounterModel.updateOne({}, { count: remainingPosts.length+1});
+
+   console.log("Successfully deleted and updated posts");
+   res.status(200).json({ message: "Successfully deleted and updated posts" });
+    } catch (error) {
     console.error(error);
     res.status(500).send(error);
   }
