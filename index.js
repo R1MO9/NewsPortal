@@ -2,14 +2,14 @@ import express from 'express';
 import bodyParser from 'body-parser';
 // for admin authentication
 import session from 'express-session';
-
+import axios from 'axios';
 
 const port = 3000;
 const app = express();
 
 app.use(express.static("public"));
 
-
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
 // Set up express-session middleware (we use this for admin panel authentication)
@@ -88,6 +88,34 @@ app.get("/addNews", authenticateUser,(req,res)=>{
     res.render("partials/addNews.ejs");
 })
 
+const API_URL = "http://localhost:4000";
+// Route to render the main page
+// app.get("/allposts",authenticateUser, async (req, res) => {
+//     try {
+//       const response = await axios.get(`${API_URL}/posts`);
+//       console.log(response);
+//       res.render("index.ejs", { posts: response.data });
+//     } catch (error) {
+//       res.status(500).json({ message: "Error fetching posts" });
+//     }
+  
+//   });
+
+// Create a new post
+app.post("/api/posts", async (req, res) => {
+    const title = req.body.title;
+    const newsContent = req.body.newsContent;
+    console.log(title);
+    console.log(newsContent);
+    try {
+      const response = await axios.post(`${API_URL}/posts`, {title : title,content : newsContent});
+
+      console.log(response.data);
+      res.redirect("/adminPage");
+    } catch (error) {
+      res.status(500).json({ message: "Error creating post" });
+    }
+  });
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
