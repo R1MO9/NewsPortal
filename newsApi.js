@@ -2,9 +2,12 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import fs from "fs";
+//for file uploading
+import multer from "multer";
 
 const app = express();
 const port = 4000;
+
 mongoose.connect("mongodb://127.0.0.1:27017/NewsDb", {
   useNewUrlParser: true
 })
@@ -18,7 +21,7 @@ app.use(bodyParser.urlencoded({
 
 
 const imageSchema = new mongoose.Schema({
-  image: String
+  image: String,
 });
 
 const postSchema = mongoose.Schema({
@@ -42,6 +45,7 @@ const CounterModel = mongoose.model('CounterModel', counterSchema);
 const PostNews = mongoose.model("PostNews", postSchema);
 
 
+// const upload = multer({ storage: storage })
 // 1: GET All posts
 
 app.get("/posts", async (req, res) => {
@@ -96,6 +100,8 @@ const formattedDate = `${day}-${month}-${year}`;
 // 3: POST a new post
 app.post("/posts", async (req, res) => {
 
+  // console.log(req.file,req.body);
+
   try {
     // Increment the counter before creating the new post
     const counter = await CounterModel.findOne();
@@ -116,11 +122,11 @@ app.post("/posts", async (req, res) => {
     // Create a new post with the incremented count
     const newPost = new PostNews({
       news_No: counter.count, // Use the incremented count as news_No
-      banner_img: req.body.img,
+      banner_img: req.body.banner_img,
       img_caption : req.body.img_caption,
       title: req.body.title,
       content: req.body.content,
-      other_img: [imageSchema],
+      // other_img: [imageSchema],
       date:formattedDate
     });
 

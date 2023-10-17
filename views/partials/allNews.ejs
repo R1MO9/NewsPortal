@@ -128,12 +128,18 @@
 			<% } else{%>
 				<td > data not found </td>
 				<% } %>
-            <td><img src="images/3.avif" alt="Sample Image" width="100"></td>
+				<%  if(post.banner_img){%>
+            <td><img src="uploads\<%= post.banner_img%>" alt="Sample Image" width="100"></td>
+			<% } else{%>
+
+				<td><img src="images\image-not-found.jpg" alt="Sample Image" width="100"></td>
+				<% } %>
             <td>
 				<%  if(post.title && post.content){%>
 				<div class="content" style="width: 800px;height: 150px;overflow-x: auto;padding-right: 7px;">
-					<%=post.title %>
-					<%= post.content %>
+					<h3><%=post.title %></h3>
+					
+					<p><%= post.content %></p>
 				</div>
 				<% } else{%>
 					<div class="content" style="width: 800px;height: 150px;overflow-x: auto;">

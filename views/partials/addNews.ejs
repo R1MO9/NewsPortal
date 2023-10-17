@@ -115,7 +115,7 @@
 				<form id="newPostForm" method="post" action="/api/posts/<%=post._id%>">
 					<div id="drop-area">
 						<div class="container">
-							<input type="file" id="upload-button" multiple accept="image/*" />
+							<input type="file" id="upload-button" name="banner_img"  accept="image/*" />
 							<label for="upload-button" class="color_change" ><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
 							</label>
 							<div id="error"></div>
@@ -140,10 +140,10 @@
 						<button type="submit">Post</button>
 						</form>
 				<% }else{ %> 
-					<form id="newPostForm" method="post" action="/api/posts">
+					<form id="newPostForm" method="post"  action="/api/posts" enctype="multipart/form-data">
 						<div id="drop-area">
 							<div class="container">
-								<input type="file" id="upload-button" multiple accept="image/*" />
+								<input type="file" id="upload-button" name="banner_img" accept="image/*" />
 								<label for="upload-button" class="color_change" ><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
 								</label>
 								<div id="error"></div>

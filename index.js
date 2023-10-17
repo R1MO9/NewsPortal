@@ -1,8 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+
 // for admin authentication
 import session from 'express-session';
 import axios from 'axios';
+import multer from 'multer';
 
 const port = 3000;
 const app = express();
@@ -85,6 +87,18 @@ app.post("/submit",async(req,res)=>{
 })
 const API_URL = "http://localhost:4000";
 
+const storage = multer.diskStorage({
+  destination : function (req, file, cb) {
+    cb(null, 'public/uploads/')
+  },
+  filename : (req, file, cb)=>{
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, uniqueSuffix + '-' + file.originalname)
+    
+  }
+})
+
+const upload = multer({ storage: storage });
 
 app.get("/addNews", authenticateUser,(req,res)=>{
     res.render("partials/addNews.ejs",{heading:"Add News"});
@@ -119,16 +133,19 @@ app.get("/allNews",authenticateUser, async (req, res) => {
   
   });
 
+
 // Create a new post
-app.post("/api/posts",authenticateUser, async (req, res) => {
+app.post("/api/posts",authenticateUser,upload.single("banner_img"),async (req, res) => {
+  console.log(req.file);
+
     const title = req.body.title;
     const newsContent = req.body.newsContent;
     const caption = req.body.caption;
+    const image = req.file.filename;
    
     try {
-      const response = await axios.post(`${API_URL}/posts`, {img_caption:caption,title : title,content : newsContent});
-
-    //   console.log(response.data);
+      const response = await axios.post(`${API_URL}/posts`, {banner_img:image,img_caption:caption,title : title,content : newsContent});
+    
       res.redirect("/allNews");
     } catch (error) {
       res.status(500).json({ message: "Error creating post" });
