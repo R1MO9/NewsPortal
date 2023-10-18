@@ -57,7 +57,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" class="logout">
+				<a href="/logout" class="logout">
 					<i class='bx bxs-log-out-circle' ></i>
 					<span class="text">Logout</span>
 				</a>
@@ -115,16 +115,20 @@
 
 			<ul class="box-info">
 				<li>
-					<i class='bx bxs-calendar-check' ></i>
+					<i class='bx bxs-news' ></i>
 					<span class="text">
-						<h3>1020</h3>
+						<%  if(locals.Total_news){ %>
+							<h3><%=Total_news%></h3>
+						<% } %>
+						
 						<p>Total Posts</p>
 					</span>
 				</li>
 				<li>
 					<i class='bx bxs-group' ></i>
 					<span class="text">
-						<h3>2834</h3>
+						<h3><a href="https://www.hitwebcounter.com" target="_blank">
+							<img src="https://hitwebcounter.com/counter/counter.php?page=9441521&style=0030&nbdigits=5&type=ip&initCount=0" title="Counter Widget" Alt="Visit counter For Websites"   border="0" /></a> </h3>
 						<p>Visitors</p>
 					</span>
 				</li>

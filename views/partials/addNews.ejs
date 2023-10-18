@@ -63,7 +63,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" class="logout">
+				<a href="/logout" class="logout">
 					<i class='bx bxs-log-out-circle' ></i>
 					<span class="text">Logout</span>
 				</a>
@@ -123,7 +123,7 @@
 							<!-- uploads\<%#= post.banner_img %> -->
 							<% if (post.banner_img) { %>
 								<h3 class="color_change">Previous Banner Image</h3>
-								<img src="\uploads\<%= post.banner_img %>" class="responsive-image" alt="Existing Image">
+								<img src="\uploads\<%= post.banner_img %>" class="responsive-image" alt="Existing Image" width="20%">
 							  <% } %>
 
 							<input type="file" id="upload-button" name="banner_img" accept="image/*" />

@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 import bodyParser from 'body-parser';
 
 // for admin authentication
@@ -48,10 +48,6 @@ const authenticateUser = (req, res, next) => {
 };
 
 //If our backend verify the id & key then admin will access the admin panel route
-app.get("/adminPage", authenticateUser,(req,res)=>{
-
-    res.render("partials/adminPanel.ejs");
-})
 
 //error 404 page
 app.get("/errorPage",(req,res)=>{
@@ -87,6 +83,17 @@ app.post("/submit",async(req,res)=>{
 })
 const API_URL = "http://localhost:4000";
 
+app.get("/adminPage",authenticateUser, async (req, res) =>{
+  try {
+    const response = await axios.get(`${API_URL}/posts`);
+
+    res.render("partials/adminPanel.ejs", { Total_news: response.data.length });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching posts" });
+  }
+
+})
+
 const storage = multer.diskStorage({
   destination : function (req, file, cb) {
     cb(null, 'public/uploads/')
@@ -121,11 +128,12 @@ app.get("/addNews", authenticateUser,(req,res)=>{
 
   
 
+
 // Route to render the main page
 app.get("/allNews",authenticateUser, async (req, res) => {
     try {
       const response = await axios.get(`${API_URL}/posts`);
-    //   console.log(response);
+
       res.render("partials/allNews.ejs", { posts: response.data });
     } catch (error) {
       res.status(500).json({ message: "Error fetching posts" });
@@ -133,6 +141,7 @@ app.get("/allNews",authenticateUser, async (req, res) => {
   
   });
 
+  
 
 // Create a new post
 app.post("/api/posts",authenticateUser,upload.single("banner_img"),async (req, res) => {
@@ -202,6 +211,20 @@ app.get("/api/posts/delete/:id",authenticateUser, async (req, res) => {
     }
   });
 
+  // Logout route
+
+app.get("/logout", (req, res) => {
+  // Destroy the session to log the user out
+  req.session.destroy((err) => {
+      if (err) {
+          console.error("Error destroying session:", err);
+          // Handle the error if necessary
+      } else {
+          // Redirect to the login page or any other desired destination after logout
+          res.redirect("/");
+      }
+  });
+});
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
   });
