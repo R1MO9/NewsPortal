@@ -10,7 +10,12 @@
     <script src="https://kit.fontawesome.com/abfccd6663.js" crossorigin="anonymous"></script>
 </head>
 <body>
-   
+	<style>
+		.responsive-image {
+		  max-width: 100%;
+		  height: auto;
+		}
+	  </style>
 
 	<!-- SIDEBAR -->
 	<section id="sidebar">
@@ -88,7 +93,7 @@
 				<span class="num">8</span>
 			</a> -->
 			<a href="#" class="profile">
-				<img src="images/people.png">
+				<img src="\images\people.png">
 			</a>
 		</nav>
 		<!-- NAVBAR -->
@@ -112,11 +117,17 @@
             <br>
             <br>
 			<% if (locals.post) { %>
-				<form id="newPostForm" method="post" action="/api/posts/<%=post._id%>">
+				<form id="newPostForm" method="post" action="/api/posts/<%=post._id%>" enctype="multipart/form-data">
 					<div id="drop-area">
 						<div class="container">
-							<input type="file" id="upload-button" name="banner_img"  accept="image/*" />
-							<label for="upload-button" class="color_change" ><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
+							<!-- uploads\<%#= post.banner_img %> -->
+							<% if (post.banner_img) { %>
+								<h3 class="color_change">Previous Banner Image</h3>
+								<img src="\uploads\<%= post.banner_img %>" class="responsive-image" alt="Existing Image">
+							  <% } %>
+
+							<input type="file" id="upload-button" name="banner_img" accept="image/*" />
+							<label for="upload-button"><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
 							</label>
 							<div id="error"></div>
 							<div id="image-display"></div>
@@ -133,9 +144,13 @@
 						<!-- <textarea id="content" name="content" rows="4"></textarea> -->
 						<textarea id="newsContent" name="newsContent" rows="12"><%=post.content %></textarea>
 						
-						 <label for="image" class="color_change">Image URL:</label>
+						 <label for="image" class="color_change">URL:</label>
 		
 						<input type="text" id="image" name="image"> 
+
+						<label for="image" class="color_change">Images:</label>
+		
+						<input type="file" id="image" name="image">
 				
 						<button type="submit">Post</button>
 						</form>
@@ -144,7 +159,7 @@
 						<div id="drop-area">
 							<div class="container">
 								<input type="file" id="upload-button" name="banner_img" accept="image/*" />
-								<label for="upload-button" class="color_change" ><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
+								<label for="upload-button"><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
 								</label>
 								<div id="error"></div>
 								<div id="image-display"></div>
@@ -161,10 +176,20 @@
 							<!-- <textarea id="content" name="content" rows="4"></textarea> -->
 							<textarea id="newsContent" name="newsContent" rows="7"></textarea>
 							
-							 <label for="image" class="color_change">Image URL:</label>
-			
+							<label for="image" class="color_change">URL:</label>
+		
 							<input type="text" id="image" name="image"> 
-					
+	
+							<div id="drop-area-other">
+								<div class="container">
+									<input type="file" id="upload-button-other" name="other_img" multiple accept="image/*" />
+									<label for="upload-button-other"><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
+									</label>
+									<div id="error-other"></div>
+									<div id="image-display-other"></div>
+								</div>
+							</div>
+							<br>
 							<button type="submit">Post</button>
 							</form>
 					<% } %>
@@ -180,20 +205,35 @@
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
 			const switchMode = document.getElementById('switch-mode');
+			
+			// Retrieve the user's preference from local storage
+			const isDarkMode = localStorage.getItem('darkMode') === 'true';
+		  
+			// Set the switch to the correct position
+			switchMode.checked = isDarkMode;
+		  
+			// Update the text color based on the user's preference
+			updateTextColor(isDarkMode);
+		  
+			// Add an event listener to handle mode changes
 			switchMode.addEventListener('change', function () {
-				const isDarkMode = switchMode.checked;
-				updateTextColor(isDarkMode);
+			  const isDarkMode = switchMode.checked;
+			  updateTextColor(isDarkMode);
+		  
+			  // Save the user's preference to local storage
+			  localStorage.setItem('darkMode', isDarkMode.toString());
 			});
-	
+		  
 			function updateTextColor(isDarkMode) {
-				const elements = document.querySelectorAll('.color_change');
-				const textColor = isDarkMode ? 'white' : 'black';
-	
-				elements.forEach(element => {
-					element.style.color = textColor;
-				});
+			  const elements = document.querySelectorAll('.content,.color_change');
+			  const textColor = isDarkMode ? 'white' : 'black';
+		  
+			  elements.forEach(element => {
+				element.style.color = textColor;
+			  });
 			}
-		});
+		  });
+		  
 	</script>
 </body>
 </html>

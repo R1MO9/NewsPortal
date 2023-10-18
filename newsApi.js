@@ -171,7 +171,9 @@ app.patch("/posts/:id", async (req, res) => {
     if (req.body.content) {
       post.content = req.body.content;
     }
-
+    if (req.body.banner_img) {
+      post.banner_img = req.body.banner_img;
+    }
 
     // Save the updated post
     await post.save();

@@ -103,7 +103,7 @@
 						</li>
 						<li><i class='bx bx-chevron-right' ></i></li>
 						<li>
-							<a class="active" href="#">All News></a>
+							<a class="active" href="#">All News</a>
 						</li>
 					</ul>
 				</div>
@@ -175,20 +175,35 @@
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
 			const switchMode = document.getElementById('switch-mode');
+			
+			// Retrieve the user's preference from local storage
+			const isDarkMode = localStorage.getItem('darkMode') === 'true';
+		  
+			// Set the switch to the correct position
+			switchMode.checked = isDarkMode;
+		  
+			// Update the text color based on the user's preference
+			updateTextColor(isDarkMode);
+		  
+			// Add an event listener to handle mode changes
 			switchMode.addEventListener('change', function () {
-				const isDarkMode = switchMode.checked;
-				updateTextColor(isDarkMode);
+			  const isDarkMode = switchMode.checked;
+			  updateTextColor(isDarkMode);
+		  
+			  // Save the user's preference to local storage
+			  localStorage.setItem('darkMode', isDarkMode.toString());
 			});
-	
+		  
 			function updateTextColor(isDarkMode) {
-				const elements = document.querySelectorAll('th, td,i, .content');
-				const textColor = isDarkMode ? 'white' : 'black';
-	
-				elements.forEach(element => {
-					element.style.color = textColor;
-				});
+			  const elements = document.querySelectorAll('th, td, i, .content');
+			  const textColor = isDarkMode ? 'white' : 'black';
+		  
+			  elements.forEach(element => {
+				element.style.color = textColor;
+			  });
 			}
-		});
+		  });
+		  
 	</script>
 
 </body>

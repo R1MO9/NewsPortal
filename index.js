@@ -136,15 +136,24 @@ app.get("/allNews",authenticateUser, async (req, res) => {
 
 // Create a new post
 app.post("/api/posts",authenticateUser,upload.single("banner_img"),async (req, res) => {
-  console.log(req.file);
 
     const title = req.body.title;
     const newsContent = req.body.newsContent;
     const caption = req.body.caption;
-    const image = req.file.filename;
+    let requestData = {
+      title: title,
+      content: newsContent,
+      img_caption: caption,
+    };
+  
+    // Check if an image is provided
+    if (req.file) {
+      const image = req.file.filename;
+      requestData.banner_img = image;
+    }
    
     try {
-      const response = await axios.post(`${API_URL}/posts`, {banner_img:image,img_caption:caption,title : title,content : newsContent});
+      const response = await axios.post(`${API_URL}/posts`, requestData);
     
       res.redirect("/allNews");
     } catch (error) {
@@ -153,14 +162,26 @@ app.post("/api/posts",authenticateUser,upload.single("banner_img"),async (req, r
   });
 
   // patially update
-  app.post("/api/posts/:id",authenticateUser,async (req, res) => {
+  app.post("/api/posts/:id",authenticateUser,upload.single("banner_img"),async (req, res) => {
     console.log("called");
     const title = req.body.title;
     const newsContent = req.body.newsContent;
     const caption = req.body.caption;
+  
+    let requestData = {
+      title: title,
+      content: newsContent,
+      img_caption: caption,
+    };
+  
+    // Check if an image is provided
+    if (req.file) {
+      const image = req.file.filename;
+      requestData.banner_img = image;
+    }
     try {
       const response = await axios.patch(
-        `${API_URL}/posts/${req.params.id}`,{img_caption:caption,title : title,content : newsContent}
+        `${API_URL}/posts/${req.params.id}`,requestData
       );
       console.log(response.data);
       res.redirect("/allNews");

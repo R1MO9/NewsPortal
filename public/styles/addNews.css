@@ -26,7 +26,7 @@
         box-sizing: border-box;
       }
       
-      #drop-area {
+      #drop-area,#drop-area-other {
         border: 2px dashed #ccc;
         border-radius: 8px;
         padding: 20px;
@@ -34,7 +34,7 @@
         cursor: pointer;
     }
     
-    #drop-area.highlight {
+    #drop-area.highlight,#drop-area-other.highlight {
         border-color: #333;
     }
 
@@ -51,7 +51,7 @@
         margin: 5em auto 1em auto;
         cursor: pointer;
       }
-      #image-display {
+      #image-display,#image-display-other {
         position: relative;
         width: 90%;
         margin: 0 auto;
@@ -61,13 +61,16 @@
         flex-wrap: wrap;
       }
     
-      #image-display figure {
+      #image-display,#image-display-other figure {
         width: 45%;
       }
       #image-display img {
         width: 100%;
       }
-      #image-display figcaption {
+      #image-display-other img {
+        width: 100%;
+      }
+      #image-display,#image-display-other figcaption {
         font-size: 0.8em;
         text-align: center;
         color: #5a5861;
