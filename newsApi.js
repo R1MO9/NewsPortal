@@ -41,7 +41,17 @@ const counterSchema = new mongoose.Schema({
   }
 });
 
+const adminSchema = new mongoose.Schema({
+  admin_name : String,
+  admin_id : String,
+  admin_Pass : String,
+  admin_img : String
+});
+
+const  adminModel = mongoose.model('adminModel',adminSchema);
+
 const CounterModel = mongoose.model('CounterModel', counterSchema);
+
 const PostNews = mongoose.model("PostNews", postSchema);
 
 
@@ -216,6 +226,77 @@ app.delete("/posts/:id", async (req, res) => {
   }
 
 });
+
+// admin data
+app.patch("/admin/posts", async (req, res) => {
+  try {
+    // Find the existing admin details
+    const admin = await adminModel.findOne();
+
+    if (!admin) {
+      await adminModel.create({
+        admin_name : "Admin",
+        admin_id : "master12494290@admin.secure.self",
+        admin_Pass : "12",
+        admin_img : "image-not-found.jpg"
+      });
+      
+    }else{
+      // Update admin details if provided in the request body
+    if (req.body.admin_name) {
+      admin.admin_name = req.body.admin_name;
+    }
+    if (req.body.admin_id) {
+      admin.admin_id = req.body.admin_id;
+    }
+    if (req.body.admin_Pass) {
+      admin.admin_Pass = req.body.admin_Pass;
+    }
+    if (req.body.admin_img) {
+      admin.admin_img = req.body.admin_img;
+    }
+
+    // Save the updated admin details
+    await admin.save();
+
+    }
+
+    
+    res.json(admin);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+// app.post("/admin/posts", async (req, res) => {
+
+//   try {
+//     // Increment the counter before creating the new post
+//     const admin = await adminModel.findOne();
+//     if(!admin){
+//       await adminModel.create({
+//         admin_name : "Admin",
+//         admin_id : "master12494290@admin.secure.self",
+//         admin_Pass : "",
+//         admin_img : "image-not-found.jpg"
+//       });
+//     }else{
+//       await adminModel.updateOne({
+//         admin_name  : req.body.admin_name,
+//         admin_id : req.body.admin_id,
+//         admin_Pass : req.body.admin_Pass,
+//         admin_img : req.body.admin_img
+//       })
+//     }
+//     console.log("Successfully saved");
+//     res.status(200).json(newPost);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({
+//       error: "An error occurred while saving the admin details."
+//     });
+//   }
+// });
 
 app.listen(port, () => {
   console.log(`API is running at http://localhost:${port}`);

@@ -141,7 +141,7 @@ app.get("/allNews",authenticateUser, async (req, res) => {
   
   });
 
-  
+ 
 
 // Create a new post
 app.post("/api/posts",authenticateUser,upload.single("banner_img"),async (req, res) => {
@@ -204,16 +204,63 @@ app.get("/api/posts/delete/:id",authenticateUser, async (req, res) => {
     const id = req.params.id;
    console.log(req.params.id);
     try {
+      // const postResponse = await axios.get(`${API_URL}/posts/${postId}`);
+      //   const post = postResponse.data;
+
+
       await axios.delete(`${API_URL}/posts/${req.params.id}`);
+
+       // Delete the associated image file
+    //    if (post.banner_img) {
+    //     const imagePath = `public/uploads/${post.banner_img}`;
+    //     fs.unlinkSync(imagePath);
+    // }
+
       res.redirect("/allNews");
     } catch (error) {
       res.status(500).json({ message: "Error deleting post" });
     }
   });
 
+ // settings route
+ app.get("/setting",authenticateUser,(req,res)=>{
+
+  res.render("partials/Profile_Settings.ejs");
+ })
+
+//admin post
+app.post("/api/admin/posts",authenticateUser,upload.single("admin_img"),async(req,res)=>{
+  const admin_name = req.body.admin_name;
+  const admin_id = req.body.admin_id;
+  const admin_Pass = req.body.admin_Pass;
+
+  let requestData = {
+    admin_name: admin_name,
+    admin_id: admin_id,
+    admin_Pass: admin_Pass,
+  };
+
+  if (req.file) {
+    const image = req.file.filename;
+    requestData.admin_img = image;
+  }
+
+  console.log(requestData);
+  try {
+    const response = await axios.patch(
+      `${API_URL}/admin/posts`,requestData
+    );
+    console.log(response.data);
+    res.redirect("/setting");
+  } catch (error) {
+    res.status(500).json({ message: "Error updating post" });
+  }
+
+ });
+
   // Logout route
 
-app.get("/logout", (req, res) => {
+app.get("/logout",authenticateUser,(req, res) => {
   // Destroy the session to log the user out
   req.session.destroy((err) => {
       if (err) {
@@ -225,6 +272,7 @@ app.get("/logout", (req, res) => {
       }
   });
 });
+
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
   });

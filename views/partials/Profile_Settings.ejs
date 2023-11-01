@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Settings</title>
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet"  type="text/css" href="styles/adminPanel.css">
-    <link rel="stylesheet"  type="text/css" href="styles/allNews.css">
+    <link rel="stylesheet"  type="text/css" href="styles/setting.css">
     <script src="https://kit.fontawesome.com/abfccd6663.js" crossorigin="anonymous"></script>
+    <!-- Include SweetAlert library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+   
 </head>
-
 <body>
-	<!-- SIDEBAR -->
-	<section id="sidebar">
+    <section id="sidebar">
 		<a href="#" class="brand">
 			<i class='bx bxs-smile'></i>
 			<span class="text">AdminPanel</span>
@@ -36,7 +37,7 @@
 					<span class="text">Analytics</span>
 				</a>
 			</li>
-			<li class="active">
+			<li>
 				<a href="/allNews">
 					<i class='bx bxs-message-dots' ></i>
 					<span class="text">All News</span>
@@ -50,7 +51,7 @@
 			</li>
 		</ul>
 		<ul class="side-menu">
-			<li>
+			<li class="active">
 				<a href="/setting">
 					<i class='bx bxs-cog' ></i>
 					<span class="text">Settings</span>
@@ -91,86 +92,54 @@
 			</a>
 		</nav>
 		<!-- NAVBAR -->
-
-		<!-- MAIN -->
-		<main>
+        <main>
 			<div class="head-title">
 				<div class="left">
-					<h1><i class='bx bxs-news'></i>&nbsp;&nbsp;All News</h1>
+					<h1>Dashboard</h1>
 					<ul class="breadcrumb">
 						<li>
 							<a href="#">Dashboard</a>
 						</li>
 						<li><i class='bx bx-chevron-right' ></i></li>
 						<li>
-							<a class="active" href="#">All News</a>
+							<a class="active" href="#">Settings</a>
 						</li>
 					</ul>
 				</div>
+				
 			</div>
             <br>
-<table>
-    <thead>
-        <tr>
-            <th class="content" >No.</th>
-            <th class="content">Image</th>
-            <th class="content">Content</th>
-            <th class="content">Date</th>
-            <th class="content">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Sample data row (replace this with your actual data) -->
-		<% posts.forEach((post)=>{%>
-        <tr>
-			<%  if(post.news_No){%>
-            <td class="content"><%= post.news_No%></td>
-			<% } else{%>
-				<td class="content" > data not found </td>
-				<% } %>
-				<%  if(post.banner_img){%>
-            <td><img src="uploads\<%= post.banner_img%>" alt="Sample Image" width="100"></td>
-			<% } else{%>
-				<td><img src="images\image-not-found.jpg" alt="Sample Image" width="100"></td>
-				<% } %>
-            <td>
-				<%  if(post.title && post.content){%>
-				<div class="content" style="width: 800px;height: 150px;overflow-x: auto;padding-right: 7px;">
-					<h3><%=post.title %></h3>
-					
-					<p><%= post.content %></p>
-				</div>
-				<% } else{%>
-					<div class="content" style="width: 800px;height: 150px;overflow-x: auto;">
-						data not found
-					</div>
-					
-					<% } %>
-			</td>
-			<%  if(post.date){%>
-            <td class="content"><%= post.date %></td>
-			<% }else{%>
-				<td class="content" >data not found</td>
-				<% } %>
-            <td class="content">
-                <a href="/edit/<%=post._id%>"><span class="edit content" ><i class="fa-regular fa-pen-to-square"></i></span></a>
-				<br><br>
-                <a href="/api/posts/delete/<%=post._id%>" style="text-decoration: none;"><span class="delete content"><i class="fa-solid fa-trash"></i></span></a>
-            </td>
-        </tr>
-		<% }) %>
-        <!-- Add more rows as needed -->
-    </tbody>
-</table>
+            <form id="adminPostForm" method="post" action="/api/admin/posts" enctype="multipart/form-data">
+    <div class="profile-container">
+       
+        <input type="file" id="imageInput" name="admin_img" accept="image/*" onchange="previewImage(event)">
 
-		</main>
-		<!-- MAIN -->
-	</section>
-	<!-- CONTENT -->
-	
+        <button id="uploadButton" onclick="document.getElementById('imageInput').click()"><div class="profile-picture" id="profilePicture">
+            <img src="/images/default_img.jpg" alt="Profile Picture">
+        </div></button>
 
-	<script src="assets/js/admin.js"></script>
-    
+        <div class="profile-info">
+            <label for="name">Name:</label>
+            <input type="text" id="name" class="input-field" name = "admin_name" placeholder="Full Name">
+            <label for="email">Admin Id:</label>
+            <input type="text" id="email" class="input-field"  name = "admin_id" placeholder="example@admin.secure.self">
+            <div class="password-container">
+            <label for="password">Password:</label>
+            <input type="password"  name = "admin_Pass" id="password" class="input-field" oninput="checkPasswordStrength()" placeholder="Enter password">
+            <span class="password-toggle" onclick="togglePasswordVisibility()" id="passwordToggle" >&#x1F512;</span>
+        </div>
+            <div class="password-strength" id="passwordStrength"></div>
+            <div class="error-message" id="passwordError" style="margin-bottom: 10px;"></div>
+           
+            <button class="save-button" onclick="saveChanges()" id="saveButton" disabled>Save Changes</button>
+        </div>
+    </div>
+</form>
+</main>
+<!-- MAIN -->
+</section>
+<script src="/assets/js/setting.js"></script>
+<script src="/assets/js/admin.js"></script>
 
 </body>
 </html>

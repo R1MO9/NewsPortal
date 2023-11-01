@@ -76,10 +76,11 @@ const switchMode = document.getElementById('switch-mode');
 function updateTheme() {
 	if (currentTheme === 'dark') {
 		document.body.classList.add('dark');
+		updateTextColor('white');
 
 	} else {
 		document.body.classList.remove('dark');
-		
+		updateTextColor('black');
 	}
 }
 
@@ -105,4 +106,12 @@ switchMode.addEventListener('change', function () {
 // Function to get the current theme
 function getCurrentTheme() {
 	return currentTheme;
+}
+
+function updateTextColor(color) {
+    const colorChangeElements = document.querySelectorAll('.color_change,.content');
+
+    colorChangeElements.forEach(element => {
+        element.style.color = color;
+    });
 }
