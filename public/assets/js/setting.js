@@ -6,7 +6,7 @@ function previewImage(event) {
         const reader = new FileReader();
 
         reader.onload = function (e) {
-            profilePicture.innerHTML = `<img src="${e.target.result}" alt="Profile Picture">`;
+            profilePicture.querySelector('img').src = e.target.result;
         };
 
         reader.readAsDataURL(input.files[0]);
@@ -14,6 +14,7 @@ function previewImage(event) {
 }
 
 function saveChanges() {
+    event.preventDefault();
     const emailValue = document.getElementById('email').value;
     const passwordValue = document.getElementById('password').value;
     const nameValue = document.getElementById('name').value;
@@ -28,9 +29,13 @@ function saveChanges() {
         icon: 'success',
         title: 'Saved Successfully',
         text: 'Your changes have been saved successfully!',
-        timer: 1900, // Automatically close after 3 seconds
+        // timer: 1700, // Automatically close after 3 seconds
         showConfirmButton: false,
     });
+    setTimeout(() => {
+        Swal.close();
+        location.reload(); // Reload the page
+    }, 1600);
 }
 
 function checkPasswordStrength() {
