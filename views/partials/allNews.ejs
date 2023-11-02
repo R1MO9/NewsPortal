@@ -8,6 +8,7 @@
     <link rel="stylesheet"  type="text/css" href="styles/adminPanel.css">
     <link rel="stylesheet"  type="text/css" href="styles/allNews.css">
     <script src="https://kit.fontawesome.com/abfccd6663.js" crossorigin="anonymous"></script>
+	
 </head>
 
 <body>
@@ -135,13 +136,14 @@
 				<% } %>
             <td>
 				<%  if(post.title && post.content){%>
-				<div class="content" style="width: 800px;height: 150px;overflow-x: auto;padding-right: 7px;">
+				<div class="content" style="width: 800px;height: 150px;overflow:hidden;padding-right: 7px;">
 					<h3><%=post.title %></h3>
 					
-					<p><%= post.content %></p>
+					<p><%- post.content %></p>
+					
 				</div>
 				<% } else{%>
-					<div class="content" style="width: 800px;height: 150px;overflow-x: auto;">
+					<div class="content" style="width: 800px;height: 150px;overflow:hidden;">
 						data not found
 					</div>
 					
@@ -155,7 +157,7 @@
             <td class="content">
                 <a href="/edit/<%=post._id%>"><span class="edit content" ><i class="fa-regular fa-pen-to-square"></i></span></a>
 				<br><br>
-                <a href="/api/posts/delete/<%=post._id%>" style="text-decoration: none;"><span class="delete content"><i class="fa-solid fa-trash"></i></span></a>
+                <a href="/api/posts/delete/<%=post._id%>" id="delete-item" style="text-decoration: none;"><span class="delete content"><i class="fa-solid fa-trash"></i></span></a>
             </td>
         </tr>
 		<% }) %>
@@ -170,7 +172,6 @@
 	
 
 	<script src="assets/js/admin.js"></script>
-    
-
+	
 </body>
 </html>

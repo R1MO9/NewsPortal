@@ -95,3 +95,4 @@ setupImageUpload(
     document.getElementById("error-other"),
     document.getElementById("image-display-other")
 );
+

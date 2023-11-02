@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
-    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet"  type="text/css" href="/styles/adminPanel.css">
-    <link rel="stylesheet"  type="text/css" href="/styles/addNews.css">
-    <script src="https://kit.fontawesome.com/abfccd6663.js" crossorigin="anonymous"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Panel</title>
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<link rel="stylesheet" type="text/css" href="/styles/adminPanel.css">
+	<link rel="stylesheet" type="text/css" href="/styles/addNews.css">
+	<script src="https://kit.fontawesome.com/abfccd6663.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
 	<style>
 		.responsive-image {
-		  max-width: 100%;
-		  height: auto;
+			max-width: 100%;
+			height: auto;
 		}
-	  </style>
+	</style>
 
 	<!-- SIDEBAR -->
 	<section id="sidebar">
@@ -26,31 +28,31 @@
 		<ul class="side-menu top">
 			<li>
 				<a href="/adminPage">
-					<i class='bx bxs-dashboard' ></i>
+					<i class='bx bxs-dashboard'></i>
 					<span class="text">Dashboard</span>
 				</a>
 			</li>
 			<li class="active">
 				<a href="#">
-					<i class='bx bxs-shopping-bag-alt' ></i>
+					<i class='bx bxs-shopping-bag-alt'></i>
 					<span class="text">Add News</span>
 				</a>
 			</li>
 			<li>
 				<a href="/Analytics">
-					<i class='bx bxs-doughnut-chart' ></i>
+					<i class='bx bxs-doughnut-chart'></i>
 					<span class="text">Analytics</span>
 				</a>
 			</li>
 			<li>
 				<a href="/allNews">
-					<i class='bx bxs-message-dots' ></i>
+					<i class='bx bxs-message-dots'></i>
 					<span class="text">All News</span>
 				</a>
 			</li>
 			<li>
 				<a href="/upcoming">
-					<i class='bx bxs-group' ></i>
+					<i class='bx bxs-group'></i>
 					<span class="text">Upcoming Posts</span>
 				</a>
 			</li>
@@ -58,13 +60,13 @@
 		<ul class="side-menu">
 			<li>
 				<a href="/setting">
-					<i class='bx bxs-cog' ></i>
+					<i class='bx bxs-cog'></i>
 					<span class="text">Settings</span>
 				</a>
 			</li>
 			<li>
 				<a href="/logout" class="logout">
-					<i class='bx bxs-log-out-circle' ></i>
+					<i class='bx bxs-log-out-circle'></i>
 					<span class="text">Logout</span>
 				</a>
 			</li>
@@ -78,12 +80,12 @@
 	<section id="content">
 		<!-- NAVBAR -->
 		<nav>
-			<i class='bx bx-menu' ></i>
+			<i class='bx bx-menu'></i>
 			<a href="#" class="nav-link">Categories</a>
 			<form action="#">
 				<div class="form-input">
 					<input type="search" placeholder="Search...">
-					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+					<button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
 				</div>
 			</form>
 			<input type="checkbox" id="switch-mode" hidden>
@@ -107,101 +109,124 @@
 						<li>
 							<a href="#">Dashboard</a>
 						</li>
-						<li><i class='bx bx-chevron-right' ></i></li>
+						<li><i class='bx bx-chevron-right'></i></li>
 						<li>
 							<a class="active" href="#"><%= heading %></a>
 						</li>
 					</ul>
 				</div>
 			</div>
-            <br>
-            <br>
+			<br>
+			<br>
 			<% if (locals.post) { %>
-				<form id="newPostForm" method="post" action="/api/posts/<%=post._id%>" enctype="multipart/form-data">
-					<div id="drop-area">
-						<div class="container">
-							<!-- uploads\<%#= post.banner_img %> -->
-							<% if (post.banner_img) { %>
-								<h3 class="color_change">Previous Banner Image</h3>
-								<img src="\uploads\<%= post.banner_img %>" class="responsive-image" alt="Existing Image" width="20%">
-							  <% } %>
+			<form id="newPostForm" method="post" action="/api/posts/<%=post._id%>" enctype="multipart/form-data">
+				<div id="drop-area">
+					<div class="container">
+						<!-- uploads\<%#= post.banner_img %> -->
+						<% if (post.banner_img) { %>
+						<h3 class="color_change">Previous Banner Image</h3>
+						<img src="\uploads\<%= post.banner_img %>" class="responsive-image" alt="Existing Image"
+							width="20%">
+						<% } %>
 
-							<input type="file" id="upload-button" name="banner_img" accept="image/*" />
-							<label for="upload-button"><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
-							</label>
-							<div id="error"></div>
-							<div id="image-display"></div>
-						</div>
+						<input type="file" id="upload-button" name="banner_img" accept="image/*" />
+						<label for="upload-button"><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or
+							Drop Photos)
+						</label>
+						<div id="error"></div>
+						<div id="image-display"></div>
 					</div>
-					<br>
-					<label for="caption" class="color_change">Image Caption:</label>
-						<input type="text" id="caption" name="caption" value="<%= post.img_caption %>">
-						<br>
-						<label for="title" class="color_change">Title:</label>
-						<input type="text" id="title" name="title" value="<%=post.title %>">
-						<br>
-						<label for="content" class="color_change">Content:</label>
-						<!-- <textarea id="content" name="content" rows="4"></textarea> -->
-						<textarea id="newsContent" name="newsContent" rows="12"><%=post.content %></textarea>
-						
-						 <label for="image" class="color_change">URL:</label>
-		
-						<input type="text" id="image" name="image"> 
+				</div>
+				<br>
+				<label for="caption" class="color_change">Image Caption:</label>
+				<input type="text" id="caption" name="caption" value="<%= post.img_caption %>">
+				<br>
+				<label for="title" class="color_change">Title:</label>
+				<input type="text" id="title" name="title" value="<%=post.title %>">
+				<br>
+				<label for="content" class="color_change">Content:</label>
+				<!-- <textarea id="content" name="content" rows="4"></textarea> -->
+				<textarea id="newsContent" name="newsContent" rows="12"><%=post.content %></textarea>
+<!-- 
+				<label for="image" class="color_change">Images:</label>
 
-						<label for="image" class="color_change">Images:</label>
-		
-						<input type="file" id="image" name="image">
-				
-						<button type="submit">Post</button>
-						</form>
-				<% }else{ %> 
-					<form id="newPostForm" method="post"  action="/api/posts" enctype="multipart/form-data">
-						<div id="drop-area">
-							<div class="container">
-								<input type="file" id="upload-button" name="banner_img" accept="image/*" />
-								<label for="upload-button"><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
-								</label>
-								<div id="error"></div>
-								<div id="image-display"></div>
-							</div>
-						</div>
-						<br>
-						<label for="caption" class="color_change">Image Caption:</label>
-							<input type="text" id="caption" name="caption">
-							<br>
-							<label for="title" class="color_change">Title:</label>
-							<input type="text" id="title" name="title">
-							<br>
-							<label for="content" class="color_change">Content:</label>
-							<!-- <textarea id="content" name="content" rows="4"></textarea> -->
-							<textarea id="newsContent" name="newsContent" rows="7"></textarea>
-							
-							<label for="image" class="color_change">URL:</label>
-		
-							<input type="text" id="image" name="image"> 
-	
-							<div id="drop-area-other">
-								<div class="container">
-									<input type="file" id="upload-button-other" name="other_img" multiple accept="image/*" />
-									<label for="upload-button-other"><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or Drop Photos)
-									</label>
-									<div id="error-other"></div>
-									<div id="image-display-other"></div>
-								</div>
-							</div>
-							<br>
-							<button type="submit">Post</button>
-							</form>
-					<% } %>
+				<input type="file" id="image" name="image"> -->
+
+				<button type="submit">Post</button>
+			</form>
+			<% }else{ %>
+			<form id="newPostForm" method="post" action="/api/posts" enctype="multipart/form-data">
+				<div id="drop-area">
+					<div class="container">
+						<input type="file" id="upload-button" name="banner_img" accept="image/*" />
+						<label for="upload-button"><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose Or
+							Drop Photos)
+						</label>
+						<div id="error"></div>
+						<div id="image-display"></div>
+					</div>
+				</div>
+				<br>
+				<label for="caption" class="color_change">Image Caption:</label>
+				<input type="text" id="caption" name="caption">
+				<br>
+				<label for="title" class="color_change">Title:</label>
+				<input type="text" id="title" name="title">
+				<br>
+				<label for="content" class="color_change">Content:</label>
+
+				<textarea id="newsContent" name="newsContent"></textarea>
+
+				<!-- <label for="image" class="color_change">URL:</label> -->
+
+				<!-- <input type="text" id="image" name="image"> -->
+
+				<br>
+				<!-- <div id="drop-area-other">
+					<div class="container">
+						<input type="file" id="upload-button-other" name="other_img" multiple accept="image/*" />
+						<label for="upload-button-other"><i class="fa-solid fa-upload"></i>&nbsp;Cover Photo <br>(Choose
+							Or Drop Photos)
+						</label>
+						<div id="error-other"></div>
+						<div id="image-display-other"></div>
+					</div>
+				</div> -->
 			
+				<button type="submit">Post</button>
+			</form>
+			<% } %>
+
 		</main>
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
-	
 
+	<script src="/assets/tinymce/tinymce.min.js"></script>
 	<script src="/assets/js/admin.js"></script>
-    <script src="/assets/js/addNews.js"></script>
+	<script src="/assets/js/addNews.js"></script>
 
+	<!-- text editor code -->
+
+	<script>
+		tinymce.init({
+			selector: '#newsContent',
+			branding: false,
+			promotion: false,
+			height: 500,
+			plugins: [
+				'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'prewiew', 'anchor', 'pagebreak',
+				'searchreplace', 'wordcount','insertdatetime', 'media',
+				
+			],
+			toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
+				'bullist numlist | link image media | ' +
+				'forecolor backcolor ',
+
+			menubar: 'file edit insert format',
+			content_style: 'body{font-family:Helvetica,Arial,sans-serif; font-size:16px}'
+		});
+	</script>
 </body>
+
 </html>
