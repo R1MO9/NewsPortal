@@ -89,3 +89,26 @@
 .special-char {
     color: #e74c3c; /* Red for special character */
 }
+
+.important-message {
+    background-color: #f44336; /* Red background color */
+    color: white;
+    padding: 10px;
+    text-align: center;
+    margin-top: 5px;
+    position: relative;
+    font-size: 14px;
+}
+
+.close-icon {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Hover effect for the close icon */
+.close-icon:hover {
+    color: black;
+}

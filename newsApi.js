@@ -30,8 +30,8 @@ const postSchema = mongoose.Schema({
   title: String,
   content: String,
   other_img: [imageSchema],
-  img_caption : String,
-  date : String
+  img_caption: String,
+  date: String
 });
 
 const counterSchema = new mongoose.Schema({
@@ -42,13 +42,13 @@ const counterSchema = new mongoose.Schema({
 });
 
 const adminSchema = new mongoose.Schema({
-  admin_name : String,
-  admin_id : String,
-  admin_Pass : String,
-  admin_img : String
+  admin_name: String,
+  admin_id: String,
+  admin_Pass: String,
+  admin_img: String
 });
 
-const  adminModel = mongoose.model('adminModel',adminSchema);
+const adminModel = mongoose.model('adminModel', adminSchema);
 
 const CounterModel = mongoose.model('CounterModel', counterSchema);
 
@@ -78,26 +78,26 @@ app.get("/posts", async (req, res) => {
 
 // 2: GET a specific post by id
 
-app.get("/posts/:id",async(req,res)=>{
+app.get("/posts/:id", async (req, res) => {
 
- const id = req.params.id;
- try {
-  // Find the post by news_No
-  const post = await PostNews.findOne({
-    _id: id
-  });
-
-  if (!post) {
-    return res.status(404).json({
-      error: 'Post not found'
+  const id = req.params.id;
+  try {
+    // Find the post by news_No
+    const post = await PostNews.findOne({
+      _id: id
     });
-  }
 
-  res.json(post);
-} catch (error) {
-  console.error(error);
-  res.status(500).send(error);
-}
+    if (!post) {
+      return res.status(404).json({
+        error: 'Post not found'
+      });
+    }
+
+    res.json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
 
 });
 
@@ -133,11 +133,11 @@ app.post("/posts", async (req, res) => {
     const newPost = new PostNews({
       news_No: counter.count, // Use the incremented count as news_No
       banner_img: req.body.banner_img,
-      img_caption : req.body.img_caption,
+      img_caption: req.body.img_caption,
       title: req.body.title,
       content: req.body.content,
       // other_img: [imageSchema],
-      date:formattedDate
+      date: formattedDate
     });
 
     await newPost.save();
@@ -207,20 +207,30 @@ app.delete("/posts/:id", async (req, res) => {
       _id: id
     });
 
-   // Get all remaining posts and update news_No accordingly
-   const remainingPosts = await PostNews.find({}, '_id').sort({ news_No: 1 });
+    // Get all remaining posts and update news_No accordingly
+    const remainingPosts = await PostNews.find({}, '_id').sort({
+      news_No: 1
+    });
 
-   for (let i = 0; i < remainingPosts.length; i++) {
-     const postId = remainingPosts[i]._id;
-     await PostNews.findByIdAndUpdate(postId, { $set: { news_No: i + 1 } });
+    for (let i = 0; i < remainingPosts.length; i++) {
+      const postId = remainingPosts[i]._id;
+      await PostNews.findByIdAndUpdate(postId, {
+        $set: {
+          news_No: i + 1
+        }
+      });
 
-   }
-   console.log(remainingPosts.length);
-   await CounterModel.updateOne({}, { count: remainingPosts.length+1});
+    }
+    console.log(remainingPosts.length);
+    await CounterModel.updateOne({}, {
+      count: remainingPosts.length + 1
+    });
 
-   console.log("Successfully deleted and updated posts");
-   res.status(200).json({ message: "Successfully deleted and updated posts" });
-    } catch (error) {
+    console.log("Successfully deleted and updated posts");
+    res.status(200).json({
+      message: "Successfully deleted and updated posts"
+    });
+  } catch (error) {
     console.error(error);
     res.status(500).send(error);
   }
@@ -235,38 +245,54 @@ app.patch("/admin/posts", async (req, res) => {
 
     if (!admin) {
       await adminModel.create({
-        admin_name : "Admin",
-        admin_id : "master12494290@admin.secure.self",
-        admin_Pass : "12",
-        admin_img : "image-not-found.jpg"
+        admin_name: "Admin",
+        admin_id: "master12494290@admin.secure.self",
+        admin_Pass: "12",
+        admin_img: "image-not-found.jpg"
       });
-      
-    }else{
+
+    } else {
       // Update admin details if provided in the request body
-    if (req.body.admin_name) {
-      admin.admin_name = req.body.admin_name;
-    }
-    if (req.body.admin_id) {
-      admin.admin_id = req.body.admin_id;
-    }
-    if (req.body.admin_Pass) {
-      admin.admin_Pass = req.body.admin_Pass;
-    }
-    if (req.body.admin_img) {
-      admin.admin_img = req.body.admin_img;
+      if (req.body.admin_name) {
+        admin.admin_name = req.body.admin_name;
+      }
+      if (req.body.admin_id) {
+        admin.admin_id = req.body.admin_id;
+      }
+      if (req.body.admin_Pass) {
+        admin.admin_Pass = req.body.admin_Pass;
+      }
+      if (req.body.admin_img) {
+        admin.admin_img = req.body.admin_img;
+      }
+
+      // Save the updated admin details
+      await admin.save();
+
     }
 
-    // Save the updated admin details
-    await admin.save();
 
-    }
-
-    
     res.json(admin);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
   }
+});
+
+app.get("/admin/posts", async (req, res) => {
+
+  try {
+    const allPosts = await adminModel.find().lean();
+
+    res.send(allPosts);
+
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "Internal Server Error"
+    });
+  }
+
 });
 // app.post("/admin/posts", async (req, res) => {
 

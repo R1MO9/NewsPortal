@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
-    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet"  type="text/css" href="styles/adminPanel.css">
-    <script src="https://kit.fontawesome.com/abfccd6663.js" crossorigin="anonymous"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Panel</title>
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<link rel="stylesheet" type="text/css" href="styles/adminPanel.css">
+	<script src="https://kit.fontawesome.com/abfccd6663.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
-   
+
 
 	<!-- SIDEBAR -->
 	<section id="sidebar">
@@ -20,31 +22,31 @@
 		<ul class="side-menu top">
 			<li class="active">
 				<a href="#">
-					<i class='bx bxs-dashboard' ></i>
+					<i class='bx bxs-dashboard'></i>
 					<span class="text">Dashboard</span>
 				</a>
 			</li>
 			<li>
 				<a href="/addNews">
-					<i class='bx bxs-shopping-bag-alt' ></i>
+					<i class='bx bxs-shopping-bag-alt'></i>
 					<span class="text">Add News</span>
 				</a>
 			</li>
 			<li>
 				<a href="/Analytics">
-					<i class='bx bxs-doughnut-chart' ></i>
+					<i class='bx bxs-doughnut-chart'></i>
 					<span class="text">Analytics</span>
 				</a>
 			</li>
 			<li>
 				<a href="/allNews">
-					<i class='bx bxs-message-dots' ></i>
+					<i class='bx bxs-message-dots'></i>
 					<span class="text">All News</span>
 				</a>
 			</li>
 			<li>
 				<a href="/upcoming">
-					<i class='bx bxs-group' ></i>
+					<i class='bx bxs-group'></i>
 					<span class="text">Upcoming Posts</span>
 				</a>
 			</li>
@@ -52,13 +54,14 @@
 		<ul class="side-menu">
 			<li>
 				<a href="/setting">
-					<i class='bx bxs-cog' ></i>
+					<i class='bx bxs-cog'></i>
 					<span class="text">Settings</span>
 				</a>
 			</li>
+
 			<li>
 				<a href="/logout" class="logout">
-					<i class='bx bxs-log-out-circle' ></i>
+					<i class='bx bxs-log-out-circle'></i>
 					<span class="text">Logout</span>
 				</a>
 			</li>
@@ -72,12 +75,12 @@
 	<section id="content">
 		<!-- NAVBAR -->
 		<nav>
-			<i class='bx bx-menu' ></i>
+			<i class='bx bx-menu'></i>
 			<a href="#" class="nav-link">Categories</a>
 			<form action="#">
 				<div class="form-input">
 					<input type="search" placeholder="Search...">
-					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+					<button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
 				</div>
 			</form>
 			<input type="checkbox" id="switch-mode" hidden>
@@ -87,7 +90,12 @@
 				<span class="num">8</span>
 			</a> -->
 			<a href="#" class="profile">
+				<%  if(locals.admin_post){%>
+				<img src="/uploads/<%= admin_post.admin_img %>">
+				<%  }else{%>
 				<img src="images/people.png">
+				<%  }%>
+
 			</a>
 		</nav>
 		<!-- NAVBAR -->
@@ -101,7 +109,7 @@
 						<li>
 							<a href="#">Dashboard</a>
 						</li>
-						<li><i class='bx bx-chevron-right' ></i></li>
+						<li><i class='bx bx-chevron-right'></i></li>
 						<li>
 							<a class="active" href="#">Home</a>
 						</li>
@@ -115,24 +123,24 @@
 
 			<ul class="box-info">
 				<li>
-					<i class='bx bxs-news' ></i>
+					<i class='bx bxs-news'></i>
 					<span class="text">
 						<%  if(locals.Total_news){ %>
-							<h3><%=Total_news%></h3>
+						<h3><%=Total_news%></h3>
 						<% } %>
-						
+
 						<p>Total Posts</p>
 					</span>
 				</li>
 				<li>
-					<i class='bx bxs-group' ></i>
+					<i class='bx bxs-group'></i>
 					<span class="text">
 						<h3>1024</h3>
 						<p>Visitors</p>
 					</span>
 				</li>
 				<li>
-					<i class='bx bxs-dollar-circle' ></i>
+					<i class='bx bxs-dollar-circle'></i>
 					<span class="text">
 						<h3>2543</h3>
 						<p>Upcoming Posts</p>
@@ -145,8 +153,8 @@
 				<div class="order">
 					<div class="head">
 						<h3>Recent Posts</h3>
-						<i class='bx bx-search' ></i>
-						<i class='bx bx-filter' ></i>
+						<i class='bx bx-search'></i>
+						<i class='bx bx-filter'></i>
 					</div>
 					<table>
 						<thead>
@@ -203,29 +211,29 @@
 				<div class="todo">
 					<div class="head">
 						<h3>Upcoming Posts</h3>
-						<i class='bx bx-plus' ></i>
-						<i class='bx bx-filter' ></i>
+						<i class='bx bx-plus'></i>
+						<i class='bx bx-filter'></i>
 					</div>
 					<ul class="todo-list">
 						<li class="completed">
 							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
+							<i class='bx bx-dots-vertical-rounded'></i>
 						</li>
 						<li class="completed">
 							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
+							<i class='bx bx-dots-vertical-rounded'></i>
 						</li>
 						<li class="not-completed">
 							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
+							<i class='bx bx-dots-vertical-rounded'></i>
 						</li>
 						<li class="completed">
 							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
+							<i class='bx bx-dots-vertical-rounded'></i>
 						</li>
 						<li class="not-completed">
 							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
+							<i class='bx bx-dots-vertical-rounded'></i>
 						</li>
 					</ul>
 				</div>
@@ -234,8 +242,9 @@
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
-	
+
 
 	<script src="assets/js/admin.js"></script>
 </body>
+
 </html>

@@ -1,7 +1,7 @@
 function previewImage(event) {
     const input = event.target;
     const profilePicture = document.getElementById('profilePicture');
-    
+
     if (input.files && input.files[0]) {
         const reader = new FileReader();
 
@@ -14,28 +14,47 @@ function previewImage(event) {
 }
 
 function saveChanges() {
-    event.preventDefault();
+    event.preventDefault(); // Prevent the default form submission
+
     const emailValue = document.getElementById('email').value;
     const passwordValue = document.getElementById('password').value;
     const nameValue = document.getElementById('name').value;
 
-    // Here you can save the changes to the server or perform any other necessary actions
-    console.log('Email:', emailValue);
-    console.log('Password:', passwordValue);
-    console.log('Name:', nameValue);
+    // Create a FormData object to store the form data
+    const formData = new FormData(document.getElementById("adminPostForm"));
 
-    // Display SweetAlert success message
-    Swal.fire({
-        icon: 'success',
-        title: 'Saved Successfully',
-        text: 'Your changes have been saved successfully!',
-        // timer: 1700, // Automatically close after 3 seconds
-        showConfirmButton: false,
-    });
-    setTimeout(() => {
-        Swal.close();
-        location.reload(); // Reload the page
-    }, 1600);
+    // Send the form data using an AJAX request
+    fetch('/administrator/posts', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // Data was successfully stored in the database
+                return response.text();
+            } else {
+                throw new Error('Data was not stored in the database');
+            }
+        })
+        .then(data => {
+            // Display a success message for a specific duration
+            Swal.fire({
+                icon: 'success',
+                title: 'Saved Successfully',
+                text: 'Your changes have been saved successfully!',
+                showConfirmButton: false,
+            });
+
+            // Automatically close the success message and reload the page after 3 seconds (3000 milliseconds)
+            setTimeout(() => {
+                Swal.close();
+                location.reload(); // Reload the page
+            }, 1700);
+        })
+        .catch(error => {
+            // Handle any errors here
+            console.error(error);
+        });
 }
 
 function checkPasswordStrength() {
@@ -92,21 +111,22 @@ function checkPasswordStrength() {
             break;
     }
     // Validate the password and enable/disable the "Save Changes" button
-   
-        if (password.length < minLength || !hasUppercase || !hasLowercase || !hasNumber || !hasSpecialChar) {
-            passwordError.innerHTML = 'Password must be at least 8 characters long and contain: ';
-            passwordError.innerHTML += `<span class="requirement-item">one uppercase letter,</span>`;
-            passwordError.innerHTML += `<span class="requirement-item">one lowercase letter,</span>`;
-            passwordError.innerHTML += `<span class="special-char">one special character,</span>`;
-            passwordError.innerHTML += `<span class="requirement-item">and one number.</span>`;
-            saveButton.disabled = true;
-        } else {
-            passwordError.innerHTML = '';
-            saveButton.disabled = false;
-        } 
-   
-   
+
+    if (password.length < minLength || !hasUppercase || !hasLowercase || !hasNumber || !hasSpecialChar) {
+        passwordError.innerHTML = 'Password must be at least 8 characters long and contain: ';
+        passwordError.innerHTML += `<span class="requirement-item">one uppercase letter,</span>`;
+        passwordError.innerHTML += `<span class="requirement-item">one lowercase letter,</span>`;
+        passwordError.innerHTML += `<span class="special-char">one special character,</span>`;
+        passwordError.innerHTML += `<span class="requirement-item">and one number.</span>`;
+        saveButton.disabled = true;
+    } else {
+        passwordError.innerHTML = '';
+        saveButton.disabled = false;
+    }
+
 }
+
+
 function togglePasswordVisibility() {
     const passwordInput = document.getElementById('password');
     const passwordToggle = document.getElementById('passwordToggle');
@@ -116,5 +136,5 @@ function togglePasswordVisibility() {
     passwordInput.type = type;
 
     // Change the eye icon based on the password visibility
-    passwordToggle.innerHTML = type === 'password' ?  '&#x1F512;': '&#x1F513;';
+    passwordToggle.innerHTML = type === 'password' ? '&#x1F512;' : '&#x1F513;';
 }
