@@ -1,12 +1,11 @@
-import express, {
-  response
-} from 'express';
-import bodyParser from 'body-parser';
+import express from "express";
+import bodyParser from "body-parser";
 
 // for admin authentication
-import session from 'express-session';
-import axios from 'axios';
-import multer from 'multer';
+import session from "express-session";
+import axios from "axios";
+import multer from "multer";
+import bcrypt from "bcryptjs";
 
 const port = 3000;
 const app = express();
@@ -14,31 +13,35 @@ const app = express();
 app.use(express.static("public"));
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
 // Set up express-session middleware (we use this for admin panel authentication)
-app.use(session({
-  secret: 'c957fa32c75dcd49f0becb7346e566b529a4795ef001a640b6b0ea1c74dea2ca', // Replace with a strong secret key
-  resave: true,
-  saveUninitialized: true
-}));
+app.use(
+  session({
+    secret: "c957fa32c75dcd49f0becb7346e566b529a4795ef001a640b6b0ea1c74dea2ca", // Replace with a strong secret key
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 // Home route
 
 app.get("/", (req, res) => {
   res.render("index.ejs");
-})
+});
 
 //Login route
 app.get("/Admin_login", (req, res) => {
   res.render("partials/loginPage.ejs");
-})
+});
 
 //master Id & key for login
 const masterId = "master12494290@admin.secure.self";
-const masterKey = "tRg!v&z#2$v2$9p&z#L6"
+const masterKey = "tRg!v&z#2$v2$9p&z#L6";
 
 // Middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
@@ -55,25 +58,48 @@ const authenticateUser = (req, res, next) => {
 
 //error 404 page
 app.get("/errorPage", (req, res) => {
-
   res.render("partials/random404.ejs");
-})
+});
+
+//for hashing
+const hashPassword = async (password) => {
+  const saltRounds = 10;
+  const hash = await bcrypt.hash(password, saltRounds);
+  return hash;
+};
+
+const verifyPassword = async (enteredPassword, hashedPassword) => {
+  const isMatch = await bcrypt.compare(enteredPassword, hashedPassword);
+  return isMatch;
+};
+
+const API_URL = "http://localhost:4000";
 
 //this is the post method with help of this we get the user typing password and then we verify the user
 app.post("/submit", async (req, res) => {
-
   const adminId = req.body.adminId;
   const password = req.body.password;
 
-
   try {
-    if (adminId === masterId && password === masterKey || password === '0') {
+    const admin_res = await axios.get(`${API_URL}/admin/posts`);
+
+    const adminData = admin_res.data[0];
+
+    // Verify the password using the bcryptUtils functions
+    const isPasswordValid = await verifyPassword(
+      password,
+      adminData.admin_Pass
+    );
+
+    if (
+      (adminId === masterId || adminId === adminData.admin_id) &&
+      (password === masterKey || isPasswordValid || password === "0")
+    ) {
       console.log("correct id & pass");
       // Redirect to the AdminPage route
       req.session.authenticated = true;
 
       res.redirect("/adminPage");
-
     } else {
       console.log("check id");
       // Redirect to an error page or handle the error accordingly
@@ -84,8 +110,7 @@ app.post("/submit", async (req, res) => {
     // Handle other errors
     res.redirect("/errorPage");
   }
-})
-const API_URL = "http://localhost:4000";
+});
 
 app.get("/adminPage", authenticateUser, async (req, res) => {
   try {
@@ -94,45 +119,40 @@ app.get("/adminPage", authenticateUser, async (req, res) => {
 
     res.render("partials/adminPanel.ejs", {
       Total_news: response.data.length,
-      admin_post: admin_res.data[0]
+      admin_post: admin_res.data[0],
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching posts"
+      message: "Error fetching posts",
     });
   }
-
-})
+});
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/uploads/')
+    cb(null, "public/uploads/");
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, uniqueSuffix + '-' + file.originalname)
-
-  }
-})
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
 
 const upload = multer({
-  storage: storage
+  storage: storage,
 });
 
 app.get("/addNews", authenticateUser, async (req, res) => {
-
   const admin_res = await axios.get(`${API_URL}/admin/posts`);
 
   res.render("partials/addNews.ejs", {
     heading: "Add News",
-    admin_post: admin_res.data[0]
-  })
+    admin_post: admin_res.data[0],
+  });
 });
-
 
 // get data from a  post
 app.get("/edit/:id", authenticateUser, async (req, res) => {
-
   try {
     const response = await axios.get(`${API_URL}/posts/${req.params.id}`);
     const admin_res = await axios.get(`${API_URL}/admin/posts`);
@@ -140,17 +160,14 @@ app.get("/edit/:id", authenticateUser, async (req, res) => {
     res.render("partials/addNews.ejs", {
       heading: "Edit News",
       post: response.data,
-      admin_post: admin_res.data[0]
+      admin_post: admin_res.data[0],
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching post"
+      message: "Error fetching post",
     });
   }
 });
-
-
-
 
 // Route to render the main page
 app.get("/allNews", authenticateUser, async (req, res) => {
@@ -160,77 +177,84 @@ app.get("/allNews", authenticateUser, async (req, res) => {
 
     res.render("partials/allNews.ejs", {
       posts: response.data,
-      admin_post: admin_res.data[0]
+      admin_post: admin_res.data[0],
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching posts"
+      message: "Error fetching posts",
     });
   }
-
 });
-
-
 
 // Create a new post
-app.post("/api/posts", authenticateUser, upload.single("banner_img"), async (req, res) => {
+app.post(
+  "/api/posts",
+  authenticateUser,
+  upload.single("banner_img"),
+  async (req, res) => {
+    const title = req.body.title;
+    const newsContent = req.body.newsContent;
+    const caption = req.body.caption;
+    let requestData = {
+      title: title,
+      content: newsContent,
+      img_caption: caption,
+    };
 
-  const title = req.body.title;
-  const newsContent = req.body.newsContent;
-  const caption = req.body.caption;
-  let requestData = {
-    title: title,
-    content: newsContent,
-    img_caption: caption,
-  };
+    // Check if an image is provided
+    if (req.file) {
+      const image = req.file.filename;
+      requestData.banner_img = image;
+    }
 
-  // Check if an image is provided
-  if (req.file) {
-    const image = req.file.filename;
-    requestData.banner_img = image;
+    try {
+      const response = await axios.post(`${API_URL}/posts`, requestData);
+
+      res.redirect("/allNews");
+    } catch (error) {
+      res.status(500).json({
+        message: "Error creating post",
+      });
+    }
   }
-
-  try {
-    const response = await axios.post(`${API_URL}/posts`, requestData);
-
-    res.redirect("/allNews");
-  } catch (error) {
-    res.status(500).json({
-      message: "Error creating post"
-    });
-  }
-});
+);
 
 // patially update
-app.post("/api/posts/:id", authenticateUser, upload.single("banner_img"), async (req, res) => {
-  console.log("called");
-  const title = req.body.title;
-  const newsContent = req.body.newsContent;
-  const caption = req.body.caption;
+app.post(
+  "/api/posts/:id",
+  authenticateUser,
+  upload.single("banner_img"),
+  async (req, res) => {
+    console.log("called");
+    const title = req.body.title;
+    const newsContent = req.body.newsContent;
+    const caption = req.body.caption;
 
-  let requestData = {
-    title: title,
-    content: newsContent,
-    img_caption: caption,
-  };
+    let requestData = {
+      title: title,
+      content: newsContent,
+      img_caption: caption,
+    };
 
-  // Check if an image is provided
-  if (req.file) {
-    const image = req.file.filename;
-    requestData.banner_img = image;
+    // Check if an image is provided
+    if (req.file) {
+      const image = req.file.filename;
+      requestData.banner_img = image;
+    }
+    try {
+      const response = await axios.patch(
+        `${API_URL}/posts/${req.params.id}`,
+        requestData
+      );
+      console.log(response.data);
+      res.redirect("/allNews");
+    } catch (error) {
+      res.status(500).json({
+        message: "Error updating post",
+      });
+    }
   }
-  try {
-    const response = await axios.patch(
-      `${API_URL}/posts/${req.params.id}`, requestData
-    );
-    console.log(response.data);
-    res.redirect("/allNews");
-  } catch (error) {
-    res.status(500).json({
-      message: "Error updating post"
-    });
-  }
-});
+);
 
 // Delete a post
 app.get("/api/posts/delete/:id", authenticateUser, async (req, res) => {
@@ -239,7 +263,6 @@ app.get("/api/posts/delete/:id", authenticateUser, async (req, res) => {
   try {
     // const postResponse = await axios.get(`${API_URL}/posts/${postId}`);
     //   const post = postResponse.data;
-
 
     await axios.delete(`${API_URL}/posts/${req.params.id}`);
 
@@ -252,7 +275,7 @@ app.get("/api/posts/delete/:id", authenticateUser, async (req, res) => {
     res.redirect("/allNews");
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting post"
+      message: "Error deleting post",
     });
   }
 });
@@ -266,56 +289,54 @@ app.get("/api/posts/delete/:id", authenticateUser, async (req, res) => {
 // admin get
 
 app.get("/setting", authenticateUser, async (req, res) => {
-
   try {
     const response = await axios.get(`${API_URL}/admin/posts`);
 
     res.render("partials/Profile_Settings.ejs", {
-      post: response.data[0]
+      post: response.data[0],
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching post"
+      message: "Error fetching post",
     });
   }
 });
-
 
 //admin post
-app.post("/administrator/posts", authenticateUser, upload.single("admin_img"), async (req, res) => {
+app.post(
+  "/administrator/posts",
+  authenticateUser,
+  upload.single("admin_img"),
+  async (req, res) => {
+    const admin_name = req.body.admin_name;
+    const admin_id = req.body.admin_id;
+    const admin_Pass = req.body.admin_Pass;
 
+    const hashPass = await hashPassword(admin_Pass);
+    let requestData = {
+      admin_name: admin_name,
+      admin_id: admin_id,
+      admin_Pass: hashPass,
+    };
 
-  const admin_name = req.body.admin_name;
-  const admin_id = req.body.admin_id;
-  const admin_Pass = req.body.admin_Pass;
+    if (req.file) {
+      const image = req.file.filename;
+      requestData.admin_img = image;
+    }
 
+    console.log(requestData);
+    try {
+      const response = await axios.patch(`${API_URL}/admin/posts`, requestData);
+      console.log(response.data);
 
-  let requestData = {
-    admin_name: admin_name,
-    admin_id: admin_id,
-    admin_Pass: admin_Pass,
-  };
-
-  if (req.file) {
-    const image = req.file.filename;
-    requestData.admin_img = image;
+      res.redirect("/setting");
+    } catch (error) {
+      res.status(500).json({
+        message: "Error updating post",
+      });
+    }
   }
-
-  console.log(requestData);
-  try {
-    const response = await axios.patch(
-      `${API_URL}/admin/posts`, requestData
-    );
-    console.log(response.data);
-
-    res.redirect("/setting");
-
-  } catch (error) {
-    res.status(500).json({
-      message: "Error updating post"
-    });
-  }
-});
+);
 
 // Logout route
 
