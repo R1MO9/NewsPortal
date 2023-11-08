@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>All News</title>
-	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upcoming News</title>
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" type="text/css" href="styles/adminPanel.css">
 	<link rel="stylesheet" type="text/css" href="styles/allNews.css">
 	<script src="https://kit.fontawesome.com/abfccd6663.js" crossorigin="anonymous"></script>
-
 </head>
-
 <body>
-	<!-- SIDEBAR -->
+    <!-- SIDEBAR -->
 	<section id="sidebar">
 		<a href="#" class="brand">
 			<i class='bx bxs-smile'></i>
@@ -38,14 +35,14 @@
 					<span class="text">Analytics</span>
 				</a>
 			</li>
-			<li class="active">
+			<li >
 				<a href="/allNews">
 					<i class='bx bxs-message-dots'></i>
 					<span class="text">All News</span>
 				</a>
 			</li>
-			<li>
-				<a href="/upcoming">
+			<li class="active">
+				<a href="#">
 					<i class='bx bxs-group'></i>
 					<span class="text">Upcoming Posts</span>
 				</a>
@@ -103,14 +100,14 @@
 		<main>
 			<div class="head-title">
 				<div class="left">
-					<h1><i class='bx bxs-news'></i>&nbsp;&nbsp;All News</h1>
+					<h1><i class='bx bxs-news'></i>&nbsp;&nbsp;Upcoming Posts</h1>
 					<ul class="breadcrumb">
 						<li>
 							<a href="#">Dashboard</a>
 						</li>
 						<li><i class='bx bx-chevron-right'></i></li>
 						<li>
-							<a class="active" href="#">All News</a>
+							<a class="active" href="#">Upcoming Posts</a>
 						</li>
 					</ul>
 				</div>
@@ -122,7 +119,7 @@
 						<th class="content">No.</th>
 						<th class="content">Image</th>
 						<th class="content">Content</th>
-						<th class="content">Date</th>
+						<th class="content">Scheduled Publish Date</th>
 						<th class="content">Action</th>
 					</tr>
 				</thead>
@@ -155,16 +152,17 @@
 
 							<% } %>
 						</td>
-						<%  if(post.date){%>
-						<td class="content"><%= post.date %></td>
+						<%  if(post.postDate && post.postTime){%>
+						<td class="content"><%= post.postDate %>,<%= post.postTime %></td>
+                        
 						<% }else{%>
 						<td class="content">data not found</td>
 						<% } %>
 						<td class="content">
-							<a href="/edit/<%=post._id%>"><span class="edit content"><i
+							<a href="/upcoming/edit/<%=post._id%>"><span class="edit content"><i
 										class="fa-regular fa-pen-to-square"></i></span></a>
 							<br><br>
-							<a href="/api/posts/delete/<%=post._id%>" id="delete-item"
+							<a href="/upcoming/api/posts/delete/<%=post._id%>" id="delete-item"
 								style="text-decoration: none;"><span class="delete content"><i
 										class="fa-solid fa-trash"></i></span></a>
 						</td>
@@ -183,5 +181,4 @@
 	<script src="assets/js/admin.js"></script>
 
 </body>
-
 </html>

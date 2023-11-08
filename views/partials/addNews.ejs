@@ -9,6 +9,12 @@
 	<link rel="stylesheet" type="text/css" href="/styles/adminPanel.css">
 	<link rel="stylesheet" type="text/css" href="/styles/addNews.css">
 	<script src="https://kit.fontawesome.com/abfccd6663.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/clockpicker/dist/jquery-clockpicker.min.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/clockpicker/dist/jquery-clockpicker.min.js"></script>
 </head>
 
 <body>
@@ -17,6 +23,30 @@
 			max-width: 100%;
 			height: auto;
 		}
+		/* Styling for the date and time input */
+		input[type="text"]#date, input[type="text"]#time {
+			padding: 10px;
+			font-size: 18px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			width: 15%;
+			margin-top: 10px;
+			background: #fff;
+			box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+			text-align: center;
+			cursor: pointer;
+		  }
+		  
+		  /* Style the cursor on hover */
+		  input[type="text"]#date:hover, input[type="text"]#time:hover {
+			background: #f2f2f2;
+		  }
+		  
+		  /* Style the input when it's focused */
+		  input[type="text"]#date:focus, input[type="text"]#time:focus {
+			border: 1px solid #007BFF; /* Border color when focused */
+			box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4); /* Box shadow when focused */
+		  }
 	</style>
 
 	<!-- SIDEBAR -->
@@ -124,7 +154,7 @@
 			<br>
 			<br>
 			<% if (locals.post) { %>
-			<form id="newPostForm" method="post" action="/api/posts/<%=post._id%>" enctype="multipart/form-data">
+			<form id="newPostForm" method="post" <% if(!post.postDate || !post.postTime ) {%>  action="/api/posts/<%=post._id%>" <%}else{  %> action="/api/upcoming-posts/<%=post._id%>" <% } %> enctype="multipart/form-data">
 				<div id="drop-area">
 					<div class="container">
 						<!-- uploads\<%#= post.banner_img %> -->
@@ -152,11 +182,15 @@
 				<label for="content" class="color_change">Content:</label>
 				<!-- <textarea id="content" name="content" rows="4"></textarea> -->
 				<textarea id="newsContent" name="newsContent" rows="12"><%=post.content %></textarea>
-				<!-- 
-				<label for="image" class="color_change">Images:</label>
-
-				<input type="file" id="image" name="image"> -->
-
+				<br>
+				<p>Schedule Upcoming Post Date:</p>
+				
+				<label for="date" class="color_change"><i class="fa-solid fa-calendar-days"></i>&nbsp;</label>
+				<input type="text" id="date"  autocomplete="off" name="date" value="<%=post.postDate %>"> &nbsp;&nbsp;&nbsp;
+				<label for="time" class="color_change"><i class="fa-solid fa-clock"></i>&nbsp;</label>
+				<input type="text" id="time"  autocomplete="off" name="time" value="<%=post.postTime %>">
+				<br>
+				<br>
 				<button type="submit">Post</button>
 			</form>
 			<% }else{ %>
@@ -182,10 +216,14 @@
 
 				<textarea id="newsContent" name="newsContent"></textarea>
 
-				<!-- <label for="image" class="color_change">URL:</label> -->
-
-				<!-- <input type="text" id="image" name="image"> -->
-
+				<br>
+				<p>Schedule Upcoming Post Date:</p>
+				
+				<label for="date" class="color_change"><i class="fa-solid fa-calendar-days"></i>&nbsp;</label>
+				<input type="text" id="date"  autocomplete="off" name="date"> &nbsp;&nbsp;&nbsp;
+				<label for="time" class="color_change"><i class="fa-solid fa-clock"></i>&nbsp;</label>
+				<input type="text" id="time"  autocomplete="off" name="time" >
+				<br>
 				<br>
 				<!-- <div id="drop-area-other">
 					<div class="container">
@@ -231,6 +269,25 @@
 			menubar: 'file edit insert format',
 			content_style: 'body{font-family:Helvetica,Arial,sans-serif; font-size:16px}'
 		});
+
+		
+		  $(document).ready(function() {
+			flatpickr("#date", {
+				enableTime: false,  // Enable time selection
+				dateFormat: "Y-m-d",  // Date and time format
+				
+			  });
+
+
+			$('#time').clockpicker({
+			  donetext: 'Done',  // Label for the "Done" button
+			  autoclose: true,  // Close the picker when a time is selected
+			  afterDone: function() {
+				// Handle any actions after a time is selected
+			  },
+			  placement: "top"
+			});
+		  });
 	</script>
 </body>
 

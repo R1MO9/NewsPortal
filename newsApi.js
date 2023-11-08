@@ -41,6 +41,32 @@ const counterSchema = new mongoose.Schema({
   }
 });
 
+
+//for upcoming posts make a new database
+const upcomingpostSchema = mongoose.Schema({
+  news_No: Number,
+  banner_img: String,
+  title: String,
+  content: String,
+  other_img: [imageSchema],
+  img_caption: String,
+  date: String,
+  postDate : String,
+  postTime : String
+});
+
+const upcomingcounterSchema = new mongoose.Schema({
+  count: {
+    type: Number,
+    default: 0
+  }
+});
+
+const MinDateTime = new mongoose.Schema({
+  minDate:String,
+  minTime: String
+});
+
 const adminSchema = new mongoose.Schema({
   admin_name: String,
   admin_id: String,
@@ -54,7 +80,11 @@ const CounterModel = mongoose.model('CounterModel', counterSchema);
 
 const PostNews = mongoose.model("PostNews", postSchema);
 
+const upcomingCounterModel = mongoose.model('upcomingCounterModel', upcomingcounterSchema);
 
+const minDateTime = mongoose.model('minDateTime', MinDateTime);
+
+const upcomingPostNews = mongoose.model("upcomingPostNews", upcomingpostSchema);
 // const upload = multer({ storage: storage })
 // 1: GET All posts
 
@@ -74,6 +104,22 @@ app.get("/posts", async (req, res) => {
 
 });
 
+// for upcoming post
+app.get("/upcoming/posts", async (req, res) => {
+
+  try {
+    const allPosts = await upcomingPostNews.find().lean();
+
+    res.send(allPosts);
+
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "Internal Server Error"
+    });
+  }
+
+});
 
 
 // 2: GET a specific post by id
@@ -101,6 +147,30 @@ app.get("/posts/:id", async (req, res) => {
 
 });
 
+// upcoming posts
+app.get("/upcoming/posts/:id", async (req, res) => {
+
+  const id = req.params.id;
+  try {
+    // Find the post by news_No
+    const post = await upcomingPostNews.findOne({
+      _id: id
+    });
+
+    if (!post) {
+      return res.status(404).json({
+        error: 'Post not found'
+      });
+    }
+
+    res.json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+
+});
+
 const today = new Date();
 const day = today.getDate();
 const month = today.getMonth() + 1;
@@ -109,48 +179,65 @@ const formattedDate = `${day}-${month}-${year}`;
 
 // 3: POST a new post
 app.post("/posts", async (req, res) => {
-
-  // console.log(req.file,req.body);
-
   try {
-    // Increment the counter before creating the new post
-    const counter = await CounterModel.findOne();
-    if (!counter) {
-      // Create a counter document if it doesn't exist
-      await CounterModel.create({
-        count: 1
+    // Check if the request contains postDate and postTime
+    if (req.body.postDate && req.body.postTime) {
+      // Increment the upcoming post counter
+      const upcounter = await upcomingCounterModel.findOne();
+      if (!upcounter) {
+        await upcomingCounterModel.create({ count: 1 });
+      } else {
+        await upcomingCounterModel.updateOne({}, { $inc: { count: 1 } });
+      }
+
+      // Define and set formattedDate
+     
+      // Create a new upcoming post
+      const upnewPost = new upcomingPostNews({
+        news_No: upcounter.count,
+        banner_img: req.body.banner_img,
+        img_caption: req.body.img_caption,
+        title: req.body.title,
+        content: req.body.content,
+        date: formattedDate,
+        postDate: req.body.postDate,
+        postTime: req.body.postTime
       });
+
+      await upnewPost.save();
+      console.log("Successfully saved upcoming post");
+      res.status(200).json(upnewPost);
     } else {
-      // Increment the existing counter
-      await CounterModel.updateOne({}, {
-        $inc: {
-          count: 1
-        }
+      // Increment the regular post counter
+      const counter = await CounterModel.findOne();
+      if (!counter) {
+        await CounterModel.create({ count: 1 });
+      } else {
+        await CounterModel.updateOne({}, { $inc: { count: 1 } });
+      }
+
+      // Define and set formattedDate
+      
+
+      // Create a new regular post
+      const newPost = new PostNews({
+        news_No: counter.count,
+        banner_img: req.body.banner_img,
+        img_caption: req.body.img_caption,
+        title: req.body.title,
+        content: req.body.content,
+        date: formattedDate
       });
+
+      await newPost.save();
+      console.log("Successfully saved regular post");
+      res.status(200).json(newPost);
     }
-
-    // Create a new post with the incremented count
-    const newPost = new PostNews({
-      news_No: counter.count, // Use the incremented count as news_No
-      banner_img: req.body.banner_img,
-      img_caption: req.body.img_caption,
-      title: req.body.title,
-      content: req.body.content,
-      // other_img: [imageSchema],
-      date: formattedDate
-    });
-
-    await newPost.save();
-    console.log("Successfully saved");
-    res.status(200).json(newPost);
   } catch (error) {
     console.log(error);
-    res.status(500).json({
-      error: "An error occurred while saving the post."
-    });
+    res.status(500).json({ error: "An error occurred while saving the post." });
   }
 });
-
 
 // 4: PATCH a post when you just want to update one parameter
 app.patch("/posts/:id", async (req, res) => {
@@ -174,6 +261,54 @@ app.patch("/posts/:id", async (req, res) => {
 
     if (req.body.title) {
       post.title = req.body.title;
+    }
+    if (req.body.img_caption) {
+      post.img_caption = req.body.img_caption;
+    }
+    if (req.body.content) {
+      post.content = req.body.content;
+    }
+    if (req.body.banner_img) {
+      post.banner_img = req.body.banner_img;
+    }
+
+    // Save the updated post
+    await post.save();
+
+    res.json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+//for upcoming news
+app.patch("/upcoming/posts/:id", async (req, res) => {
+  const id = req.params.id;
+
+  console.log(id);
+
+  try {
+    // Find the post by news_No
+    const post = await upcomingPostNews.findOne({
+      _id: id
+    });
+
+    if (!post) {
+      return res.status(404).json({
+        error: 'Post not found'
+      });
+    }
+
+    console.log(post);
+
+    if (req.body.title) {
+      post.title = req.body.title;
+    }
+    if (req.body.postDate) {
+      post.postDate = req.body.postDate;
+    }
+    if (req.body.postTime) {
+      post.postTime = req.body.postTime;
     }
     if (req.body.img_caption) {
       post.img_caption = req.body.img_caption;
@@ -236,6 +371,47 @@ app.delete("/posts/:id", async (req, res) => {
   }
 
 });
+//for upcoming post
+app.delete("/upcoming/posts/:id", async (req, res) => {
+
+  try {
+    const id = req.params.id;
+
+    // Use findOneAndRemove with news_No
+    const docDelete = await upcomingPostNews.findOneAndDelete({
+      _id: id
+    });
+
+    // Get all remaining posts and update news_No accordingly
+    const remainingPosts = await upcomingPostNews.find({}, '_id').sort({
+      news_No: 1
+    });
+
+    for (let i = 0; i < remainingPosts.length; i++) {
+      const postId = remainingPosts[i]._id;
+      await upcomingPostNews.findByIdAndUpdate(postId, {
+        $set: {
+          news_No: i + 1
+        }
+      });
+
+    }
+    console.log(remainingPosts.length);
+    await upcomingCounterModel.updateOne({}, {
+      count: remainingPosts.length + 1
+    });
+
+    console.log("Successfully deleted and updated posts");
+    res.status(200).json({
+      message: "Successfully deleted and updated posts"
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+
+});
+
 
 // admin data
 app.patch("/admin/posts", async (req, res) => {
@@ -294,6 +470,66 @@ app.get("/admin/posts", async (req, res) => {
   }
 
 });
+
+// MinDateTime collection
+app.get("/mindatetime/posts", async (req, res) => {
+  try {
+    const allPosts = await minDateTime.find().lean();
+
+    if (allPosts.length === 0) {
+      // If there are no documents in the collection, insert a default value
+      const defaultMinDateTime = new minDateTime({
+        minDate: "2023-11-06",
+        minTime: "12:00",
+      });
+      await defaultMinDateTime.save();
+      res.send([defaultMinDateTime]);
+    } else {
+      res.send(allPosts);
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
+app.patch("/mindatetime/posts", async (req, res) => {
+  try {
+    const allPosts = await minDateTime.find();
+
+    if (allPosts.length === 0) {
+      // If there are no documents in the collection, insert a default value
+      const defaultMinDateTime = new minDateTime({
+        minDate: "2023-11-06",
+        minTime: "12:00",
+      });
+      await defaultMinDateTime.save();
+      res.json(defaultMinDateTime);
+    } else {
+      // Find the existing document (assuming there's only one)
+      const existingMinDateTime = allPosts[0];
+
+      // Update minDate and minTime if provided in the request body
+      if (req.body.minDate) {
+        existingMinDateTime.minDate = req.body.minDate;
+      }
+      if (req.body.minTime) {
+        existingMinDateTime.minTime = req.body.minTime;
+      }
+
+      // Save the updated document
+      await existingMinDateTime.save();
+
+      res.json(existingMinDateTime);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
 // app.post("/admin/posts", async (req, res) => {
 
 //   try {
