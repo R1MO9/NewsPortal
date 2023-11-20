@@ -62,6 +62,13 @@ const upcomingcounterSchema = new mongoose.Schema({
   }
 });
 
+const ViewscounterSchema = new mongoose.Schema({
+  count: {
+    type: Number,
+    default: 0
+  }
+});
+
 const MinDateTime = new mongoose.Schema({
   minDate:String,
   minTime: String
@@ -82,6 +89,8 @@ const PostNews = mongoose.model("PostNews", postSchema);
 
 const upcomingCounterModel = mongoose.model('upcomingCounterModel', upcomingcounterSchema);
 
+const ViewsCounterModel = mongoose.model('ViewsCounterModel', ViewscounterSchema);
+
 const minDateTime = mongoose.model('minDateTime', MinDateTime);
 
 const upcomingPostNews = mongoose.model("upcomingPostNews", upcomingpostSchema);
@@ -94,14 +103,9 @@ app.get("/posts", paginatedResults(PostNews), async (req, res) => {
 });
 
 // for upcoming post
-app.get("/upcoming/posts", paginatedResults(upcomingPostNews),async (req, res) => {
+app.get("/upcoming/posts",async (req, res) => {
 
-  res.json(res.paginatedResults);
-});
-
-// it is for only checking all posts time date
-app.get("/upcoming/posts/dateTime",async (req, res) => {
-
+  // res.json(res.paginatedResults);
   try {
     const allPosts = await upcomingPostNews.find().lean();
 
@@ -113,7 +117,12 @@ app.get("/upcoming/posts/dateTime",async (req, res) => {
       message: "Internal Server Error"
     });
   }
- 
+});
+
+// it is for only checking all posts time date
+app.get("/upcoming/posts/dateTime",paginatedResults(upcomingPostNews),async (req, res) => {
+
+  res.json(res.paginatedResults);
 });
 
 // 2: GET a specific post by id
@@ -622,6 +631,43 @@ app.get("/upcoming/counter", async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+
+
+app.post("/Pageviews",async(req,res)=>{
+  try {
+    const  count = req.body.count; // Extract the count from the request body
+
+    if (typeof count === 'undefined') {
+      return res.status(400).send('Count is missing in the request body');
+    }
+
+    // Update the count in the ViewsCounterModel using Mongoose $set operator
+    await ViewsCounterModel.updateOne({}, { $set: { count: count } });
+
+    res.status(200).send('Count updated successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.message);
+  }
+});
+
+app.get("/Pageviews", async (req, res) => {
+  try {
+    const counter = await ViewsCounterModel.findOne();
+    if (!counter) {
+      // If there is no counter, you may want to handle this case accordingly
+      counter = await ViewsCounterModel.create({ count: 0 });
+      // res.status(404).json({ error: "Counter not found" });
+    } else {
+      res.json(counter);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`API is running at http://localhost:${port}`);

@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-
+import countapi from 'countapi-js';
 // for admin authentication
 import session from "express-session";
 import axios from "axios";
@@ -28,10 +28,36 @@ app.use(
   })
 );
 
+const API_URL = "http://localhost:4000";
+
 // Home route
 
-app.get("/", (req, res) => {
-  res.render("index.ejs");
+app.get("/", async(req, res) => {
+  try {
+    // Check if a unique identifier exists in the session
+    if (!req.session.visited) {
+      // If not, mark as visited and increment the count
+      req.session.visited = true;
+
+      // Fetch the current count
+      const response = await axios.get(`${API_URL}/Pageviews`);
+      const currentCount = response.data.count || 0; // Assuming response.data.count exists
+
+      // Increment the count by 1
+      const updatedCount = currentCount + 1;
+
+      // Update the count on the server
+      await axios.post(`${API_URL}/Pageviews`, { count: updatedCount });
+    }
+
+    // Render the index view
+    res.render("index.ejs");
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+  
 });
 
 //Login route
@@ -73,7 +99,7 @@ const verifyPassword = async (enteredPassword, hashedPassword) => {
   return isMatch;
 };
 
-const API_URL = "http://localhost:4000";
+
 
 //this is the post method with help of this we get the user typing password and then we verify the user
 app.post("/submit", async (req, res) => {
@@ -118,12 +144,17 @@ app.get("/adminPage", authenticateUser, async (req, res) => {
     const admin_res = await axios.get(`${API_URL}/admin/posts`);
 
     const newsCount = await axios.get(`${API_URL}/counter`);
-
-    res.render("partials/adminPanel.ejs", {
-      Total_news: newsCount.data.count  - 1,
-      admin_post: admin_res.data[0],
+    const upcomingnewsCount = await axios.get(`${API_URL}/upcoming/counter`);
     
-    });
+    const viewsCount = await axios.get(`${API_URL}/Pageviews`);
+
+      res.render("partials/adminPanel.ejs", {
+        Total_news: newsCount.data.count - 1,
+        admin_post: admin_res.data[0],
+        upcoming_news: upcomingnewsCount.data.count - 1,
+        totalVisits: viewsCount.data.count  // Pass the total visit count to your admin page
+      });
+    
   } catch (error) {
     res.status(500).json({
       message: "Error fetching posts",
@@ -238,7 +269,8 @@ app.get("/upcoming", authenticateUser, async (req, res) => {
     let selectedPage = (parseInt)(req.query.page) || 1;
     console.log(selectedPage);
 
-    const response = await axios.get(`${API_URL}/upcoming/posts?page=${selectedPage}&limit=5`);
+    const response = await axios.get(`${API_URL}/upcoming/posts/dateTime`);
+
     const admin_res = await axios.get(`${API_URL}/admin/posts`);
     const total_news_response = await axios.get(`${API_URL}/upcoming/counter`);
     const total_news_count = total_news_response.data.count;
@@ -579,7 +611,7 @@ async function checkDateAndTimeMatch() {
   console.log("called");
 
   try {
-    const response = await axios.get(`${API_URL}/upcoming/posts/dateTime`);
+    const response = await axios.get(`${API_URL}/upcoming/posts`);
 
     const matchingPosts = response.data.filter((e) => {
       const postDate = e.postDate;

@@ -127,7 +127,11 @@
 					<span class="text">
 						<%  if(locals.Total_news){ %>
 						<h3><%=Total_news%></h3>
-						<% } %>
+						
+						<% }else{ %>
+
+							<h3>0</h3>
+							<% } %>
 
 						<p>Total Posts</p>
 					</span>
@@ -135,15 +139,27 @@
 				<li>
 					<i class='bx bxs-group'></i>
 					<span class="text">
-						<h3>1024</h3>
+						<% if(locals.totalVisits){ %>
+						<h3><%= totalVisits %></h3>
+							<% }else{ %>
+
+								<h3>0</h3>
+								<% } %>
 						<p>Visitors</p>
 					</span>
 				</li>
 				<li>
 					<i class='bx bxs-dollar-circle'></i>
 					<span class="text">
-						<h3>2543</h3>
+						<%  if(locals.upcoming_news){ %>
+						<h3><%=upcoming_news%></h3>
+					
+						<% }else{ %>
+
+							<h3>0</h3>
+							<% } %>
 						<p>Upcoming Posts</p>
+
 					</span>
 				</li>
 			</ul>
