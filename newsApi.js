@@ -88,24 +88,19 @@ const upcomingPostNews = mongoose.model("upcomingPostNews", upcomingpostSchema);
 // const upload = multer({ storage: storage })
 // 1: GET All posts
 
-app.get("/posts", async (req, res) => {
+app.get("/posts", paginatedResults(PostNews), async (req, res) => {
 
-  try {
-    const allPosts = await PostNews.find().lean();
-
-    res.send(allPosts);
-
-  } catch (error) {
-    console.log(error);
-    res.json({
-      message: "Internal Server Error"
-    });
-  }
-
+  res.json(res.paginatedResults);
 });
 
 // for upcoming post
-app.get("/upcoming/posts", async (req, res) => {
+app.get("/upcoming/posts", paginatedResults(upcomingPostNews),async (req, res) => {
+
+  res.json(res.paginatedResults);
+});
+
+// it is for only checking all posts time date
+app.get("/upcoming/posts/dateTime",async (req, res) => {
 
   try {
     const allPosts = await upcomingPostNews.find().lean();
@@ -118,9 +113,8 @@ app.get("/upcoming/posts", async (req, res) => {
       message: "Internal Server Error"
     });
   }
-
+ 
 });
-
 
 // 2: GET a specific post by id
 
@@ -559,6 +553,75 @@ app.patch("/mindatetime/posts", async (req, res) => {
 //     });
 //   }
 // });
+
+
+
+//pagination system
+function paginatedResults(model) {
+  return async (req, res, next) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const results = {};
+
+    try {
+      const totalDocuments = await model.countDocuments().exec();
+
+      if (endIndex < totalDocuments) {
+        results.next = {
+          page: page + 1,
+          limit: limit,
+        };
+      }
+
+      if (startIndex > 0) {
+        results.previous = {
+          page: page - 1,
+          limit: limit,
+        };
+      }
+
+      results.results = await model.find().limit(limit).skip(startIndex).exec();
+      res.paginatedResults = results;
+      next();
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+}
+//get counter model
+app.get("/counter", async (req, res) => {
+  try {
+    const counter = await CounterModel.findOne();
+    if (!counter) {
+      // If there is no counter, you may want to handle this case accordingly
+      res.status(404).json({ error: "Counter not found" });
+    } else {
+      res.json(counter);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
+app.get("/upcoming/counter", async (req, res) => {
+  try {
+    const counter = await upcomingCounterModel.findOne();
+    if (!counter) {
+      // If there is no counter, you may want to handle this case accordingly
+      res.status(404).json({ error: "Counter not found" });
+    } else {
+      res.json(counter);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
 
 app.listen(port, () => {
   console.log(`API is running at http://localhost:${port}`);

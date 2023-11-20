@@ -86,8 +86,8 @@
 				<span class="num">8</span>
 			</a> -->
 			<a href="#" class="profile">
-				<%  if(locals.admin_post){%>
-				<img src="/uploads/<%= admin_post.admin_img %>">
+				<%  if(locals.allNews.admin_post){%>
+				<img src="/uploads/<%= allNews.admin_post.admin_img %>">
 				<%  }else{%>
 				<img src="images/people.png">
 				<%  }%>
@@ -125,7 +125,7 @@
 				</thead>
 				<tbody>
 					<!-- Sample data row (replace this with your actual data) -->
-					<% posts.forEach((post)=>{%>
+					<% allNews.posts.forEach((post)=>{%>
 					<tr>
 						<%  if(post.news_No){%>
 						<td class="content"><%= post.news_No%></td>
@@ -171,6 +171,30 @@
 					<!-- Add more rows as needed -->
 				</tbody>
 			</table>
+			<br>
+			<div class="totalPage" style="display: none;"><%= allNews.totalPages %></div>
+
+			
+			<div class="container">
+			<div class="pagination">
+			<ul>
+				<% if(allNews.currPAge > 1) { %>
+					 <a href="/upcoming?page=<%=allNews.currPAge-1%>"><li class="btn">Before</li></a> 
+					 <% } %>
+				
+			<% for(let i = 1; i <= allNews.endingLink; i++) { %>
+				<% if(i === allNews.currPAge) { %>
+					<a class="selectedLink" href="/upcoming?page=<%=i%>"><li class="numb active"><%=i%></li></a> 
+				<% continue; %>
+			<% } %>
+			<a href="/upcoming?page=<%=i%>"><li class="numb"><%=i%></li></a>
+				<% } %>
+			
+				<% if(allNews.currPAge < allNews.totalPages) { %> <a href="/upcoming?page=<%=allNews.currPAge+1%>"><li class="btn">After</li></a> <% } %>
+
+				</ul>
+			  </div>
+			</div>
 
 		</main>
 		<!-- MAIN -->

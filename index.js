@@ -117,9 +117,12 @@ app.get("/adminPage", authenticateUser, async (req, res) => {
     const response = await axios.get(`${API_URL}/posts`);
     const admin_res = await axios.get(`${API_URL}/admin/posts`);
 
+    const newsCount = await axios.get(`${API_URL}/counter`);
+
     res.render("partials/adminPanel.ejs", {
-      Total_news: response.data.length,
+      Total_news: newsCount.data.count  - 1,
       admin_post: admin_res.data[0],
+    
     });
   } catch (error) {
     res.status(500).json({
@@ -190,13 +193,37 @@ app.get("/upcoming/edit/:id", authenticateUser, async (req, res) => {
 
 // Route to render the main page
 app.get("/allNews", authenticateUser, async (req, res) => {
+
   try {
-    const response = await axios.get(`${API_URL}/posts`);
+    let selectedPage = (parseInt)(req.query.page) || 1;
+  console.log(selectedPage);
+
+    const response = await axios.get(`${API_URL}/posts?page=${selectedPage}&limit=5`);
+    // console.log("API Response:", response.data.results);
     const admin_res = await axios.get(`${API_URL}/admin/posts`);
 
+    const total_news_response = await axios.get(`${API_URL}/counter`);
+    const total_news_count = total_news_response.data.count;
+
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil((total_news_count - 1) / itemsPerPage);
+
+    let iterator = (selectedPage - 5) < 1 ? 1 : selectedPage - 5;
+    let endingLink = (iterator + 9) <= totalPages ? (iterator + 9) : selectedPage + (totalPages - selectedPage);
+    if(endingLink < (selectedPage + 4)){
+        iterator -= (selectedPage + 4) - totalPages;
+    }
+
     res.render("partials/allNews.ejs", {
-      posts: response.data,
-      admin_post: admin_res.data[0],
+      allNews: {
+        posts: response.data.results,
+        admin_post: admin_res.data[0],
+        totalPages: totalPages,
+        currPAge:selectedPage,
+        iterator:iterator,
+        endingLink:endingLink
+
+      }
     });
   } catch (error) {
     res.status(500).json({
@@ -208,12 +235,32 @@ app.get("/allNews", authenticateUser, async (req, res) => {
 // render upcoming posts
 app.get("/upcoming", authenticateUser, async (req, res) => {
   try {
-    const response = await axios.get(`${API_URL}/upcoming/posts`);
+    let selectedPage = (parseInt)(req.query.page) || 1;
+    console.log(selectedPage);
+
+    const response = await axios.get(`${API_URL}/upcoming/posts?page=${selectedPage}&limit=5`);
     const admin_res = await axios.get(`${API_URL}/admin/posts`);
+    const total_news_response = await axios.get(`${API_URL}/upcoming/counter`);
+    const total_news_count = total_news_response.data.count;
+
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil((total_news_count - 1) / itemsPerPage);
+
+    let iterator = (selectedPage - 5) < 1 ? 1 : selectedPage - 5;
+    let endingLink = (iterator + 9) <= totalPages ? (iterator + 9) : selectedPage + (totalPages - selectedPage);
+    if(endingLink < (selectedPage + 4)){
+        iterator -= (selectedPage + 4) - totalPages;
+    }
 
     res.render("partials/upcomingNews.ejs", {
-      posts: response.data,
+      allNews: {
+      posts: response.data.results,
       admin_post: admin_res.data[0],
+      totalPages: totalPages,
+      currPAge:selectedPage,
+      iterator:iterator,
+      endingLink:endingLink
+      }
     });
   } catch (error) {
     res.status(500).json({
@@ -532,7 +579,7 @@ async function checkDateAndTimeMatch() {
   console.log("called");
 
   try {
-    const response = await axios.get(`${API_URL}/upcoming/posts`);
+    const response = await axios.get(`${API_URL}/upcoming/posts/dateTime`);
 
     const matchingPosts = response.data.filter((e) => {
       const postDate = e.postDate;
