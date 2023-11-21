@@ -36,6 +36,7 @@
           "scrollbar-color"
         ]
       }
-    ]
+    ],
+    "meta-viewport": "off"
   }
 }

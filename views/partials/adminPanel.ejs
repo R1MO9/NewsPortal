@@ -169,90 +169,75 @@
 				<div class="order">
 					<div class="head">
 						<h3>Recent Posts</h3>
-						<i class='bx bx-search'></i>
-						<i class='bx bx-filter'></i>
+						<!-- <i class='bx bx-search'></i>
+						<i class='bx bx-filter'></i> -->
 					</div>
 					<table>
 						<thead>
 							<tr>
-								<th>User</th>
-								<th>Date Order</th>
-								<th>Status</th>
+								<th style="text-align: center;">News Title</th>
+								<th style="text-align: center;">Date Of Publish</th>
+								<th style="text-align: center;">Status</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>
-									<img src="images/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completed</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="images/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pending</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="images/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status process">Process</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="images/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pending</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="images/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completed</span></td>
-							</tr>
+							<% posts.forEach(function(post){ %>
+								<tr>
+									<td>
+									  <% if (post.banner_img) { %>
+										<img src="uploads\<%= post.banner_img%>">
+									  <% } else { %>
+										<img src="images\image-not-found.jpg"> <!-- Replace with your default image path -->
+									  <% } %>
+									  <% if (post.title) { %>
+										<p class="title-limit"><%= post.title %></p>
+									  <% } else { %>
+										<p>No Title Available</p>
+									  <% } %>
+									</td>
+									<td style="text-align: center;"><%= post.date %></td>
+									<td style="text-align: center;"><span class="status completed">Uploaded</span></td>
+								  </tr>
+							<% }) %>
+							
 						</tbody>
 					</table>
 				</div>
 				<div class="todo">
-					<div class="head">
-						<h3>Upcoming Posts</h3>
-						<i class='bx bx-plus'></i>
-						<i class='bx bx-filter'></i>
+					<div class="order">
+						<div class="head">
+							<h3>Upcoming Posts</h3>
+							<!-- <i class='bx bx-search'></i>
+							<i class='bx bx-filter'></i> -->
+						</div>
+						<table>
+							<thead>
+								<tr>
+									<th style="text-align: center;">News Title</th>
+									<th style="text-align: center;">Date Of Publish</th>
+									<th style="text-align: center;">Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<% upcomingPosts.forEach(function(post){ %>
+									<tr>
+										<td>
+										
+										  <% if (post.title) { %>
+											<p class="title-limit" style="width: 250px;"><%= post.title %></p>
+										  <% } else { %>
+											<p>No Title Available</p>
+										  <% } %>
+										</td>
+										<td style="text-align: center;"><%= post.date %></td>
+										<td style="text-align: center;"><span class="status pending">Pending</span></td>
+									  </tr>
+								<% }) %>
+								
+							</tbody>
+						</table>
 					</div>
-					<ul class="todo-list">
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-					</ul>
-				</div>
+				
 			</div>
 		</main>
 		<!-- MAIN -->

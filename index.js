@@ -140,25 +140,46 @@ app.post("/submit", async (req, res) => {
 
 app.get("/adminPage", authenticateUser, async (req, res) => {
   try {
-    const response = await axios.get(`${API_URL}/posts`);
+  const limit = 5; // Specify the limit for the number of posts you want to retrieve
+
+// Get the total count of posts
+
+const newsCount = await axios.get(`${API_URL}/counter`);
+
+const totalPosts = newsCount.data.count - 1;
+
+const upcomingnewsCount = await axios.get(`${API_URL}/upcoming/counter`);
+
+const upcomingTotalPosts = upcomingnewsCount.data.count - 1;
+
+// Calculate the page number where the last 5 posts start
+let pageForLastFive = Math.ceil(totalPosts / limit);
+
+let pageForLastUpcomingNews = Math.ceil(upcomingTotalPosts / limit);
+
+const response = await axios.get(`${API_URL}/posts?page=${pageForLastFive}&limit=${limit}`);
+
+const Upcomingresponse = await axios.get(`${API_URL}/upcoming/posts/dateTime?page=${pageForLastUpcomingNews}&limit=${limit}`);
+
     const admin_res = await axios.get(`${API_URL}/admin/posts`);
 
-    const newsCount = await axios.get(`${API_URL}/counter`);
-    const upcomingnewsCount = await axios.get(`${API_URL}/upcoming/counter`);
-    
     const viewsCount = await axios.get(`${API_URL}/Pageviews`);
+
 
       res.render("partials/adminPanel.ejs", {
         Total_news: newsCount.data.count - 1,
         admin_post: admin_res.data[0],
         upcoming_news: upcomingnewsCount.data.count - 1,
-        totalVisits: viewsCount.data.count  // Pass the total visit count to your admin page
+        totalVisits: viewsCount.data.count , // Pass the total visit count to your admin page
+        posts : response.data.results,
+        upcomingPosts : Upcomingresponse.data.results
       });
     
   } catch (error) {
     res.status(500).json({
       message: "Error fetching posts",
     });
+    console.log(error);
   }
 });
 

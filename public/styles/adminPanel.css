@@ -590,3 +590,11 @@ body {
 		min-width: 420px;
 	}
 }
+
+.title-limit {
+	max-height: calc(2 * 1.2em); /* Set height for two lines (adjust line-height as needed) */
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 300px;
+  }
