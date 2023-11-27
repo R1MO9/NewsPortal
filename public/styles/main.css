@@ -25,14 +25,16 @@
 
 /*  */
 body {
-    margin: 0;
+    margin: 0 ;
     padding: 0;
     border: 0;
-    display: flex;
+   
 }
 
-.container {
-    margin: 0 250px;
+/* news content */
+
+.content-box {
+    margin: 0 100px;
     background-color: #f2efef;
 }
 
@@ -40,10 +42,6 @@ body {
     width: 100%;
 }
 
-.newsCard {
-    width: 75%;
-    display: inline-block;
-}
 
 .newsBanner {
     width: 300;
@@ -54,21 +52,31 @@ body {
     padding: 10px 0;
 }
 
-.news-body {}
-
-.adDiv {
-    width: 24%;
-    display: inline-block;
-    text-align: center;
+.news{
+    display: flex;
+}
+.ad-container {
+    display: flex;
+    flex-direction: column;
+    /* Additional styling */
 }
 
-/* .newsCard .col{
-    width: 350px;
-    display: inline-block;
-} */
-/*  */
+.adDiv {
+    margin-bottom: 20px; /* Spacing between ads */
+    /* Other necessary styles for the ads */
+}
 
+.adDiv img{
+    width: 220px;
+}
 
+.content-wrap{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+/* swiper part  */
 swiper-container {
     width: 100%;
     height: 100%;
@@ -107,6 +115,7 @@ swiper-slide img {
     height: 300px;
 }
 
+/* Link styles */
 .underline-animation {
     margin-top: 10px;
 }
