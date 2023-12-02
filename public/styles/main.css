@@ -77,6 +77,15 @@ body {
 }
 
 /* swiper part  */
+
+.swiper{
+    padding: 50px;
+    /* background-color:#f2efef; */
+}
+
+/* .swiper .swiper-body .mySwiper swiper-slide{
+    background-color: #ffffff;
+} */
 swiper-container {
     width: 100%;
     height: 100%;
@@ -85,7 +94,7 @@ swiper-container {
 swiper-slide {
     text-align: center;
     font-size: 18px;
-    background: #fff;
+    background: #f2efef;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -124,3 +133,39 @@ swiper-slide img {
     text-decoration: none;
     color: #ffffff;
 }
+
+.headlines{
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 500;
+    position: relative;
+
+}
+
+.line {
+    width: 90%; /* Adjust the width of the line */
+    border-bottom: 1px solid black; /* You can change the line style */
+    margin-bottom: 10px; /* Adjust the margin as needed */
+    margin-left: 5%;
+    
+  }
+  
+.card-content{
+    padding-left: 20px;
+}
+.NewsHeading{
+    position: absolute;
+    top: -20px; /* Adjust the positioning of the heading */
+    left: 50%; /* Center the heading horizontally */
+    transform: translateX(-50%);
+    background-color: #f2efef;
+    padding: 0 10px; /* Add padding to the heading */
+}
+
+.second-Swiper{
+    padding: 25px;
+}
+
+/* .second-Swiper{
+    background-color: #ffffff;
+} */
